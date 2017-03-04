@@ -12,6 +12,7 @@ You probably don't need this - just [try it out](https://paxinice.github.io/phot
 
 
 Start by selecting how many rows and columns you want, if you change this later **all your images will be reset**!
+
 All measures are in millimeters (1 in = 25.4 mm).
 
 The margin between images specifies how much whitespace divides the images, effectively making them smaller.
@@ -25,8 +26,11 @@ Drag and drop image files (jpg or png) onto the dashed boxes to insert them. The
 Finally start your browser's print feature to save as pdf or print directly. If you need help using your browser's print feature, just search 'how to print in Firefox/Safari/Chrome/Opera/Edge' with your favorite search engine.
 
 ## upcoming
+- keep images when changing number of columns/rows
+- move image in it's box
 - better looking settings
 - translations
+- menu bar
 
 ## created with
 - [jquery](https://jquery.org/) -> javascript turbo
@@ -34,3 +38,4 @@ Finally start your browser's print feature to save as pdf or print directly. If 
 
 ## license
 Apache 2.0
+Pascal Führlich 3/2017
