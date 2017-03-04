@@ -10,12 +10,18 @@ a free browser utility for creating photo grids to print directly or save as pdf
 ## detailed instructions
 You probably don't need this - just [try it out](https://paxinice.github.io/photo-grid-printer/), it's easy!
 
+
 Start by selecting how many rows and columns you want, if you change this later **all your images will be reset**!
 All measures are in millimeters (1 in = 25.4 mm).
+
 The margin between images specifies how much whitespace divides the images, effectively making them smaller.
+
 The page width and height should be set according to the size you want to print the result in. Initial size is A4 (210mm x 297mm). See Wikipedia for common [international](https://en.wikipedia.org/wiki/Paper_size#Overview:_ISO_paper_sizes) and [American](https://en.wikipedia.org/wiki/Paper_size#Standardized_American_paper_sizes) paper sizes.
+
 Each printer can a only print to a specific area of a paper, leaving a margin along the edges. Setting the printer margin reduces the effective paper size, so your printer does not clip or scale anything.
+
 Drag and drop image files (jpg or png) onto the dashed boxes to insert them. The images will be scaled to fit the box. After scaling the image will fill up the entire box and either width or height of your image will fit exactly, while the other one will be clipped.
+
 Finally start your browser's print feature to save as pdf or print directly. If you need help using your browser's print feature, just search 'how to print in Firefox/Safari/Chrome/Opera/Edge' with your favorite search engine.
 
 ## upcoming
