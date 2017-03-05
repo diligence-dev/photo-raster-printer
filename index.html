@@ -14,7 +14,7 @@
        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
        See the License for the specific language governing permissions and
        limitations under the License. -->
-    <title>Create a Photo Grid</title>
+    <title>create an image grid</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" href="icons/favicon-32x32.png" sizes="32x32">
@@ -63,6 +63,8 @@
 
 <body>
     <div class="controls">
+        this website requires drag and drop, so no smartphone support <br>
+        make sure you did not disable javascript<br>
         <a href="README.md.html">detailed instructions</a><br>
         start by selecting how many rows and columns you want<br>
         if you change this later, all images will be reset<br>
@@ -77,8 +79,10 @@
         <button id="swapWidthHeight">swap</button><br>
         printer margins: <input id="printerMarginsInp" type="number" step="0.1" value="5" autocomplete="off"><br>
 
-        drag and drop image files onto the dashed boxes<br>
-        use the print function of your browser to print or create a pdf<br><br>
+        drag and drop image files onto the orange boxes<br>
+        <button onclick="window.print()">print</button> <br>
+        to save as pdf select a pdf-printer instead of an actual printer<br>
+        on some operating systems you might need to install a pdf-printer first<br><br>
     </div>
 
     <div id="wrap"></div>
@@ -140,7 +144,7 @@
 
 
             for (var i = 0; i < columns * rows; i++) {
-                var box = $('<div class="box"><div class="boxInner"><img src="placeholder.png"/></div></div>')
+                var box = $('<div class="box"><div class="boxInner"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII="/></div></div>')
                 box.on('dragenter', catchDragDrop)
                 .on('dragover', catchDragDrop)
                 .on('drop', function(e){
