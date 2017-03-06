@@ -3,7 +3,7 @@ a free browser utility for creating image grids to print directly or save as pdf
 
 ## how it works
 - no download required
-- your browser does all the work:
+- your browser does all the work (using javascript):
   * no files are uploaded
   * no need to download result
 
@@ -11,7 +11,7 @@ a free browser utility for creating image grids to print directly or save as pdf
 You probably don't need this - just [try it out](https://paxinice.github.io/image-grid-printer/), it's easy!
 
 
-Start by selecting how many rows and columns you want, if you change this later **all your images will be reset**!
+Start by selecting how many rows and columns you want in your grid.
 
 All measures are in millimeters (1 in = 25.4 mm).
 
