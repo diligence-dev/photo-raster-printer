@@ -5,7 +5,7 @@
         <title></title>
         <style>
             img {
-                position: relative;
+                position: absolute;
             }
 
             body {
@@ -13,7 +13,7 @@
             }
 
             #wrap {
-                position: relative;
+                position: absolute;;
             }
 
             #printerMarginDiv {
@@ -32,7 +32,7 @@
             var pageWidth = 700
             var pageHeight = 700
 
-            var printerMargin = 0
+            var printerMargin = 50
             var imageMargin = 15
 
             var columns = 3
@@ -46,25 +46,21 @@
             $('#wrap').width(printWidth).height(printHeight)
             .css('left', printerMargin).css('top', printerMargin)
 
-
             var effectiveWidth = printWidth - (columns - 1) * imageMargin
             var imgWidth = effectiveWidth / columns
             var effectiveHeight = printHeight - (rows - 1) * imageMargin
             var imgHeight = effectiveHeight / rows
 
-            console.log(imgWidth)
-            console.log(imgHeight)
             for (var y = 0; y < rows; y++) {
                 for (var x = 0; x < columns; x++) {
                     $('<img>').attr('src', placeholder)
                     .width(imgWidth)
                     .height(imgHeight)
-                    .css('top', y * imageMargin)
-                    .css('left', x * imageMargin)
+                    .css('top', y * (imageMargin + imgHeight))
+                    .css('left', x * (imageMargin + imgWidth))
                     .appendTo($('#wrap'))
                 }
             }
-            console.log($('img'))
         </script>
     </body>
 </html>
