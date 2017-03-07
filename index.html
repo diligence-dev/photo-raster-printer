@@ -1,185 +1,167 @@
-<!DOCTYPE HTML>
-<head>
-    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-    <!-- Copyright 2017 Pascal Führlich
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+        <!-- Copyright 2017 Pascal Führlich
 
-       Licensed under the Apache License, Version 2.0 (the 'License');
-       you may not use this file except in compliance with the License.
-       You may obtain a copy of the License at
+           Licensed under the Apache License, Version 2.0 (the 'License');
+           you may not use this file except in compliance with the License.
+           You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+             http://www.apache.org/licenses/LICENSE-2.0
 
-       Unless required by applicable law or agreed to in writing, software
-       distributed under the License is distributed on an 'AS IS' BASIS,
-       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-       See the License for the specific language governing permissions and
-       limitations under the License. -->
-    <title>create an image grid</title>
-
-    <link rel='apple-touch-icon' sizes='180x180' href='icons/apple-touch-icon.png'>
-    <link rel='icon' type='image/png' href='icons/favicon-32x32.png' sizes='32x32'>
-    <link rel='icon' type='image/png' href='icons/favicon-16x16.png' sizes='16x16'>
-    <link rel='manifest' href='icons/manifest.json'>
-    <link rel='mask-icon' href='icons/safari-pinned-tab.svg' color='#5bbad5'>
-    <link rel='shortcut icon' href='icons/favicon.ico'>
-    <meta name='msapplication-config' content='icons/browserconfig.xml'>
-    <meta name='theme-color' content='#ffffff'>
-
-    <style type='text/css'>
-        @media screen and (min-device-width: 1023px) {
-            .smartphone {
-                display: none;
+           Unless required by applicable law or agreed to in writing, software
+           distributed under the License is distributed on an 'AS IS' BASIS,
+           WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+           See the License for the specific language governing permissions and
+           limitations under the License. -->
+        <title>create an image grid</title>
+        <link rel='apple-touch-icon' sizes='180x180' href='icons/apple-touch-icon.png'>
+        <link rel='icon' type='image/png' href='icons/favicon-32x32.png' sizes='32x32'>
+        <link rel='icon' type='image/png' href='icons/favicon-16x16.png' sizes='16x16'>
+        <link rel='manifest' href='icons/manifest.json'>
+        <link rel='mask-icon' href='icons/safari-pinned-tab.svg' color='#5bbad5'>
+        <link rel='shortcut icon' href='icons/favicon.ico'>
+        <meta name='msapplication-config' content='icons/browserconfig.xml'>
+        <meta name='theme-color' content='#ffffff'>
+        <style type='text/css'>
+            .box {
+                position: absolute;
+                overflow: hidden;
             }
-        }
 
-        .boxInner img {
-            width: 100%;
-            height: 100%;
-        }
+            .box img {
+                position: absolute;
+            }
 
-        #wrap {
-            overflow: hidden;
-        }
+            #vertical {
+                float: left;
+            }
 
-        .box {
-            float: left;
-            position: relative;
-        }
+            #wrap {
+                position: relative;
+                float: left;
+                /*will always print, unlike background-color*/
+                /*box-shadow: inset 0 0 0 1000px transparent;*/
+            }
 
-        .boxInner {
-            position: absolute;
-            left: 0px;
-            right: 0px;
-            top: 0px;
-            bottom: 0px;
-            overflow: hidden;
-        }
+            @media screen {
+                #wrap {
+                    border: dashed;
+                }
 
-        .controls input {
-            width: 70px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class='controls'>
-        you need to drag and drop images, so it probably does not work if you are using a smartphone/tablet<br>
-        columns: <input id='columnsInp' type='number' step='1' value='3' min='1' autocomplete='off'>
-        rows: <input id='rowsInp' type='number' step='1' value='4' min='1' autocomplete='off'>
-        <button id='swapColumnsRows'>swap</button><br>
-        (all measures in mm)<br>
-        margin between images: <input id='marginInp' type='number' step='0.1' value='3' min='0' autocomplete='off'><br>
-
-        page width: <input id='widthInp' type='number' step='0.1' value='210' min='0' autocomplete='off'>
-        page height: <input id='heightInp' type='number' step='0.1' value='297' min='0' autocomplete='off'>
-        <button id='swapWidthHeight'>swap</button><br>
-        printer margins: <input id='printerMarginsInp' type='number' step='0.1' value='5' min='0' autocomplete='off'><br>
-
-        drag and drop image files onto the orange boxes<br>
-        <button onclick='window.print()'>print</button> <br>
-        to save as pdf select a pdf-printer instead of an actual printer<br>
-        on some operating systems you might need to install a pdf-printer first<br><br>
-        <a href='README.md.html'>detailed instructions</a><br>
-    </div>
-
-    <div id='wrap'></div>
-
-    <script src='https://code.jquery.com/jquery-3.1.1.min.js' integrity='sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=' crossorigin='anonymous'></script>
-    <script content='text/javascript'>
-        $('#marginInp').change(function(){
-            $('.boxInner').css('margin', 0.5 * $(this).val() + 'mm')
-            updateAll()
-        })
-
-        $('#widthInp').change(function(){
-            $('#wrap').css('width', $(this).val() - 2 * $('#printerMarginsInp').val() + 'mm')
-            updateAll()
-        })
-
-        $('#heightInp').change(function(){
-            $('#wrap').css('height', $(this).val() - 2 * $('#printerMarginsInp').val() + 'mm')
-            updateAll()
-        })
-
-        $('#printerMarginsInp').change(function(){
-            $('#heightInp').change()
-            $('#widthInp').change()
-        })
-
-        $('#swapWidthHeight').click(function(){
-            var tmp = $('#widthInp').val()
-            $('#widthInp').val($('#heightInp').val()).change()
-            $('#heightInp').val(tmp).change()
-        })
-
-        function update(){
-            var targetWidth = $(this).width('100%').width()
-            var targetHeight = $(this).height('100%').height()
-            var scale = Math.max(targetWidth / $(this).prop('naturalWidth'),
-                                targetHeight / $(this).prop('naturalHeight'))
-            $(this).width(scale * $(this).prop('naturalWidth'))
-            $(this).height(scale * $(this).prop('naturalHeight'))
-        }
-
-        var placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
-        var blobs = {}
-
-        function updateAll() {
-            $('.boxInner img').trigger('load')
-        }
-
-        function catchDragDrop(e) {
-            e.preventDefault()
-            e.stopPropagation()
-        }
-
-        $('#columnsInp , #rowsInp').change(function(){
-            $('#wrap div').detach()
-
-            var columns = $('#columnsInp').val()
-            var rows = $('#rowsInp').val()
-
-            for (var x = 0; x < rows; x++) {
-                for (var y = 0; y < columns; y++) {
-                    var box = $('<div class="box"><div class="boxInner"><img/></div></div>')
-                    box.on('dragenter', catchDragDrop)
-                    .on('dragover', catchDragDrop)
-                    .on('drop', (function(lx, ly){
-                        //saving x as lx, otherwise x == columns onDrop for each box
-                        return function(e){
-                            catchDragDrop(e)
-                            if(e.originalEvent.dataTransfer.files.length > 0){
-                                var mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
-                                blobs[[lx, ly]] = mURL
-                                $(this).find('img').attr('src', mURL)
-                                console.log(blobs)
-                            }
-                        }
-                    }) (x, y) )
-
-                    box.find('img').on('load', update)
-                    box.find('img').attr('src', blobs[[x, y]] || placeholder)
-
-                    box.css('padding-left', 100 / columns + '%')
-                    .css('height', 100 / rows + '%')
-                    .appendTo('#wrap')
-                    $('#marginInp').change()
+                #printerMarginBackground {
+                    position: absolute;
+                    top: 50px;
+                    /*background-color: #ddd;*/
+                    border: dashed;
                 }
             }
-        })
 
-        $('#swapColumnsRows').click(function(){
-            var tmp = $('#columnsInp').val()
-            $('#columnsInp').val($('#rowsInp').val()).change()
-            $('#rowsInp').val(tmp).change()
-        })
+            @media print {
+                .noPrint {
+                    display: none;
+                }
 
-        $('#rowsInp').change()
-        $('#marginInp').change()
-        $('#widthInp').change()
-        $('#heightInp').change()
-    </script>
+                body {
+                    margin: 0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div>
 
-</body>
+        </div>
+        <div id='printerMarginBackground'>
+            <div id='horizontal' class='noPrint'></div>
+            <div id='vertical' class='noPrint'></div>
+            <div id='wrap'></div>
+        </div>
 
+        <script src='https://code.jquery.com/jquery-3.1.1.min.js' integrity='sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=' crossorigin='anonymous'></script>
+        <script type="text/javascript">
+            const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
+            function catchDragDrop(e) {
+                e.preventDefault()
+                e.stopPropagation()
+            }
+
+
+            var blobs = {}
+
+            var pageWidth = 210
+            var pageHeight = 297
+            $('#printerMarginBackground')
+                .width(pageWidth + 'mm')
+                .height(pageHeight + 'mm')
+
+            var printerMargin = 5
+            $('#horizontal')
+                .width(1)
+                .height(printerMargin + 'mm')
+            $('#vertical')
+                .width(printerMargin + 'mm')
+                .height(1)
+
+            var printWidth = pageWidth - 2 * printerMargin
+            var printHeight = pageHeight - 2 * printerMargin
+            $('#wrap')
+                .width(printWidth + 'mm')
+                .height(printHeight + 'mm')
+
+            var columns = 3
+            var rows = 4
+            var imageMargin = 3
+
+            var imgWidth = (printWidth - (columns - 1) * imageMargin) / columns
+            var imgHeight = (printHeight - (rows - 1) * imageMargin) / rows
+
+            function scaleImage(){
+                var widthScale = $(this).parent().width() / $(this).prop('naturalWidth')
+                var heightScale = $(this).parent().height() / $(this).prop('naturalHeight')
+
+                if(widthScale > heightScale){
+                    $(this)
+                        .width(widthScale * $(this).prop('naturalWidth'))
+                        .height(widthScale * $(this).prop('naturalHeight'))
+                        .css('top', -0.5 * ($(this).height() - $(this).parent().height()))
+                }else{
+                    $(this)
+                        .width(heightScale * $(this).prop('naturalWidth'))
+                        .height(heightScale * $(this).prop('naturalHeight'))
+                        .css('left', -0.5 * ($(this).width() - $(this).parent().width()))
+                }
+            }
+
+            for (var y = 0; y < rows; y++) {
+                for (var x = 0; x < columns; x++) {
+                    $('<div class="box"><img></div>')
+                        .width(imgWidth + 'mm')
+                        .height(imgHeight + 'mm')
+                        .css('top', y * (imageMargin + imgHeight) + 'mm')
+                        .css('left', x * (imageMargin + imgWidth) + 'mm')
+                        .on('dragenter', catchDragDrop)
+                        .on('dragover', catchDragDrop)
+                        .on('drop', (function(lx, ly){
+                            //saving x as lx, otherwise x == columns onDrop for each box
+                            return function(e){
+                                catchDragDrop(e)
+                                if(e.originalEvent.dataTransfer.files.length > 0){
+                                    var mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
+                                    blobs[[lx, ly]] = mURL
+                                    $(this).find('img')
+                                    .attr('src', mURL)
+                                    .trigger('load')
+                                }
+                            }
+                        }) (x, y) )
+                        .appendTo($('#wrap'))
+                        .find('img')
+                            .attr('src', blobs[[x, y]] || placeholder)
+                            .on('load', scaleImage)
+                }
+            }
+        </script>
+    </body>
 </html>
