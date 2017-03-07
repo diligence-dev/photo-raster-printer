@@ -42,19 +42,19 @@
                 position: relative;
                 float: left;
                 /*will always print, unlike background-color*/
-                /*box-shadow: inset 0 0 0 1000px transparent;*/
+                /*box-shadow: 0 0 0 1000px green inset;*/
             }
 
             @media screen {
                 #wrap {
-                    border: dashed;
+                    border-style: dashed;
                 }
 
                 #printerMarginBackground {
                     position: absolute;
                     top: 50px;
                     /*background-color: #ddd;*/
-                    border: dashed;
+                    border-style: dashed;
                 }
             }
 
@@ -88,8 +88,6 @@
             }
 
 
-            var blobs = {}
-
             var pageWidth = 210
             var pageHeight = 297
             $('#printerMarginBackground')
@@ -117,6 +115,8 @@
             var imgWidth = (printWidth - (columns - 1) * imageMargin) / columns
             var imgHeight = (printHeight - (rows - 1) * imageMargin) / rows
 
+            var blobs = {}
+
             function scaleImage(){
                 var widthScale = $(this).parent().width() / $(this).prop('naturalWidth')
                 var heightScale = $(this).parent().height() / $(this).prop('naturalHeight')
@@ -142,7 +142,18 @@
                         .css('top', y * (imageMargin + imgHeight) + 'mm')
                         .css('left', x * (imageMargin + imgWidth) + 'mm')
                         .on('dragenter', catchDragDrop)
-                        .on('dragover', catchDragDrop)
+                        .on('dragover', function(e){
+                            catchDragDrop(e)
+                            $(this)
+                                .css('box-shadow', '0 0 0 20px #FFFF33')
+                                .css('z-index', '1')
+                        })
+                        .on('dragleave', function(e){
+                            catchDragDrop(e)
+                            $(this)
+                                .css('box-shadow', '')
+                                .css('z-index', 'initial')
+                        })
                         .on('drop', (function(lx, ly){
                             //saving x as lx, otherwise x == columns onDrop for each box
                             return function(e){
@@ -150,10 +161,13 @@
                                 if(e.originalEvent.dataTransfer.files.length > 0){
                                     var mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
                                     blobs[[lx, ly]] = mURL
-                                    $(this).find('img')
-                                    .attr('src', mURL)
-                                    .trigger('load')
+                                    $(this)
+                                        .css('border-style', 'none')
+                                        .find('img')
+                                            .attr('src', mURL)
+                                            .trigger('load')
                                 }
+                                $(this).trigger('dragleave')
                             }
                         }) (x, y) )
                         .appendTo($('#wrap'))
