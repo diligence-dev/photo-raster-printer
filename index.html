@@ -51,8 +51,7 @@
                 }
 
                 #printerMarginBackground {
-                    position: absolute;
-                    top: 50px;
+                    margin: 100px auto;
                     /*background-color: #ddd;*/
                     border-style: dashed;
                 }
@@ -94,7 +93,7 @@
                 .width(pageWidth + 'mm')
                 .height(pageHeight + 'mm')
 
-            var printerMargin = 5
+            var printerMargin = 15
             $('#horizontal')
                 .width(1)
                 .height(printerMargin + 'mm')
@@ -151,7 +150,7 @@
                         .on('dragleave', function(e){
                             catchDragDrop(e)
                             $(this)
-                                .css('box-shadow', '')
+                                .css('box-shadow', 'initial')
                                 .css('z-index', 'initial')
                         })
                         .on('drop', (function(lx, ly){
