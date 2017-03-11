@@ -31,45 +31,15 @@
 			overflow: hidden;
 		}
 
-		#vertical {
+		#horizontal {
 			float: left;
 		}
 
 		#wrap {
 			position: relative;
 			float: left;
-			/*will always print, unlike background-color*/
+			/*box-shadow will always print, unlike background-color*/
 			/*box-shadow: 0 0 0 1000px green inset;*/
-		}
-
-		@media screen {
-			#wrap, #printerMarginBackground {
-				border-style: solid;
-				border-width: 3px;
-				box-sizing: border-box;
-			}
-			#printerMarginBackground {
-				position: relative;
-				left: 25px;
-				margin: 100px auto;
-				/*background-color: #ddd;*/
-			}
-			#horSvg {
-				position: absolute;
-				left: 0;
-				top: -25px;
-				width: 100%;
-				height: 15px;
-				background-color: #ddd;
-			}
-			#verSvg {
-				position: absolute;
-				top: 0;
-				left: -25px;
-				width: 15px;
-				height: 100%;
-				background-color: #ddd;
-			}
 		}
 
 		@media print {
@@ -80,6 +50,53 @@
 				margin: 0;
 			}
 		}
+
+		@media screen {
+			#printerMarginBackground {
+				background-color: #ddd;
+				position: relative;
+				left: 50px;
+				margin: 150px auto;
+				/*background-color: #ddd;*/
+			}
+			#horMeasures {
+				position: absolute;
+				top: -60px;
+				width: 100%;
+				/*todo remove*/
+				height: 30px;
+				background-color: #ddd;
+			}
+			#horMeasures input, #verMeasures input {
+				position: absolute;
+				text-align: center;
+			}
+			#horSvg {
+				position: absolute;
+				top: -25px;
+				width: 100%;
+				height: 15px;
+				background-color: #ddd;
+			}
+			#verMeasures {
+				position: absolute;
+				left: -100px;
+				height: 100%;
+				/*todo remove*/
+				height: 30px;
+				background-color: #ddd;
+			}
+			#verSvg {
+				position: absolute;
+				left: -25px;
+				width: 15px;
+				height: 100%;
+				background-color: #ddd;
+			}
+			#wrap, #printerMarginBackground {
+				border: dashed 2px;
+			}
+		}
 	</style>
 </head>
 
@@ -88,19 +105,29 @@
 
 	</div>
 	<div id='printerMarginBackground'>
+		<div id="horMeasures" class="noPrint"></div>
 		<svg id='horSvg' class='noPrint'>
             <g stroke-width='2px' stroke='black'></g>
         </svg>
+		<div id="verMeasures" class="noPrint"></div>
 		<svg id='verSvg' class='noPrint'>
             <g stroke-width='2px' stroke='black'></g>
         </svg>
-		<div id='horizontal' class='noPrint'></div>
 		<div id='vertical' class='noPrint'></div>
+		<div id='horizontal' class='noPrint'></div>
 		<div id='wrap'></div>
 	</div>
 
 	<script src='jquery-3.1.1.min.js' integrity='sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=' crossorigin='anonymous'></script>
 	<script type="text/javascript">
+		const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
+		const inpWidth = 15
+		const inpHeight = 5
+		function catchDragDrop(e) {
+			e.preventDefault()
+			e.stopPropagation()
+		}
+
 		function line(x1, x2, y1, y2){
 			return $(document.createElementNS('http://www.w3.org/2000/svg', 'line'))
 				.attr('x1', x1)
@@ -108,18 +135,37 @@
 				.attr('y1', y1)
 				.attr('y2', y2)
 		}
-		function horLine(x1, x2){
+
+		function horLine(x1, width, mclass){
+			var x2 = x1 + width
 			$('#horSvg g')
 				.append(line(x1 + 1 + 'mm', x2 - 1 + 'mm', '50%', '50%'))
 				.append(line(x1 + 1 + 'mm', x1 + 1 + 'mm', '0%', '100%'))
 				.append(line(x2 - 1 + 'mm', x2 - 1 + 'mm', '0%', '100%'))
+			$('<input type="number" step="0.1">')
+				.attr('value', Math.round(width*10)/10)
+				.width(inpWidth + 'mm')
+				.height(inpHeight + 'mm')
+				.css('left', x1 + 0.5 * (width - inpWidth - 4) + 'mm')
+				.addClass(mclass)
+				.appendTo('#horMeasures')
 		}
-		function verLine(y1, y2){
+
+		function verLine(y1, height, mclass){
+			var y2 = y1 + height
 			$('#verSvg g')
 				.append(line('50%', '50%', y1 + 1 + 'mm', y2 - 1 + 'mm'))
 				.append(line('0%', '100%', y1 + 1 + 'mm', y1 + 1 + 'mm'))
 				.append(line('0%', '100%', y2 - 1 + 'mm', y2 - 1 + 'mm'))
+			$('<input type="number" step="0.1">')
+				.attr('value', Math.round(height*10)/10)
+				.width(inpWidth + 'mm')
+				.height(inpHeight + 'mm')
+				.css('top', y1 + 0.5 * (height - inpHeight - 3) + 'mm')
+				.addClass(mclass)
+				.appendTo('#verMeasures')
 		}
+
 		function scaleImage() {
 			var widthScale = $(this).parent().width() / $(this).prop('naturalWidth')
 			var heightScale = $(this).parent().height() / $(this).prop('naturalHeight')
@@ -136,12 +182,6 @@
 					.css('left', -0.5 * ($(this).width() - $(this).parent().width()))
 			}
 		}
-		const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
-		function catchDragDrop(e) {
-			e.preventDefault()
-			e.stopPropagation()
-		}
-
 
 		var pageWidth = 210
 		var pageHeight = 297
@@ -150,44 +190,80 @@
 			.height(pageHeight + 'mm')
 
 		var printerMargin = 15
-		$('#horizontal')
+		$('#vertical')
 			.width(1)
 			.height(printerMargin + 'mm')
-		$('#vertical')
+		$('#horizontal')
 			.width(printerMargin + 'mm')
 			.height(1)
 
-		horLine(0, printerMargin)
-		horLine(pageWidth - printerMargin, pageWidth)
-		verLine(0, printerMargin)
-		verLine(pageHeight - printerMargin, pageHeight)
+		horLine(0, printerMargin, 'printerMarginInp')
+		horLine(pageWidth - printerMargin, printerMargin, 'printerMarginInp')
+		verLine(0, printerMargin, 'printerMarginInp')
+		verLine(pageHeight - printerMargin, printerMargin, 'printerMarginInp')
+		$('.printerMarginInp').change(function(){
+			printerMargin = $(this).val()
+			$('.printerMarginInp').val(printerMargin)
+			$('#vertical').height(printerMargin + 'mm')
+			$('#horizontal').width(printerMargin + 'mm')
+			$('.printerMarginLines').width(printerMargin + 'mm')
+			updatePrintSize()
+		})
 
-		var printWidth = pageWidth - 2 * printerMargin
-		var printHeight = pageHeight - 2 * printerMargin
-		$('#wrap')
-			.width(printWidth + 'mm')
-			.height(printHeight + 'mm')
+		function updatePrintSize(){
+			var printWidth = pageWidth - 2 * printerMargin
+			var printHeight = pageHeight - 2 * printerMargin
+			$('#wrap')
+				.width(printWidth + 'mm')
+				.height(printHeight + 'mm')
+			updateImageSize(printWidth, printHeight)
+		}
+
+		var imageWidth
+		var imageHeight
+
+		function updateImageSize(printWidth, printHeight) {
+			imageWidth = (printWidth - (columns - 1) * imageMargin) / columns
+			imageHeight = (printHeight - (rows - 1) * imageMargin) / rows
+			var mtop = y * (imageMargin + imageHeight)
+			var mleft = x * (imageMargin + imageWidth)
+			$('.box')
+				.width(imageWidth + 'mm')
+				.height(imageHeight + 'mm')
+				.css('top', mtop + 'mm')
+				.css('left', mleft + 'mm')
+				// .find('img')
+				// 	.trigger('load')
+		}
 
 		var columns = 3
 		var rows = 4
-		var imageMargin = 3
+		var imageMargin = 5
 
-		var imgWidth = (printWidth - (columns - 1) * imageMargin) / columns
-		var imgHeight = (printHeight - (rows - 1) * imageMargin) / rows
+		updatePrintSize()
+		// $('.printerMarginInp').first().val(15)
 
 		var blobs = {}
 
 		for (var y = 0; y < rows; y++) {
 			for (var x = 0; x < columns; x++) {
-				var mtop = y * (imageMargin + imgHeight)
-				var mleft = x * (imageMargin + imgWidth)
+				var mtop = y * (imageMargin + imageHeight)
+				var mleft = x * (imageMargin + imageWidth)
 
-				horLine(printerMargin + mleft, printerMargin + mleft + imgWidth)
-				verLine(printerMargin + mtop, printerMargin + mtop + imgHeight)
+				horLine(printerMargin + mleft, imageWidth)
+				verLine(printerMargin + mtop, imageHeight)
+
+				if(x < columns-1){
+					horLine(printerMargin + mleft + imageWidth, imageMargin)
+				}
+
+				if(y < rows-1){
+					verLine(printerMargin + mtop + imageHeight, imageMargin)
+				}
 
 				$('<div class="box"><img></div>')
-					.width(imgWidth + 'mm')
-					.height(imgHeight + 'mm')
+					.width(imageWidth + 'mm')
+					.height(imageHeight + 'mm')
 					.css('top', mtop + 'mm')
 					.css('left', mleft + 'mm')
 					.on('dragenter', catchDragDrop)
@@ -210,10 +286,9 @@
 							if (e.originalEvent.dataTransfer.files.length > 0) {
 								var mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
 								blobs[[lx, ly]] = mURL
-								$(this)
-									.find('img')
-										.attr('src', mURL)
-										.trigger('load')
+								$(this).find('img')
+									.attr('src', mURL)
+									.trigger('load')
 							}
 							$(this).trigger('dragleave')
 						}
@@ -224,6 +299,8 @@
 						.on('load', scaleImage)
 			}
 		}
+
+		// updatePrintSize()
 	</script>
 </body>
 
