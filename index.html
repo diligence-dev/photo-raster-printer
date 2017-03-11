@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-        <!-- Copyright 2017 Pascal Führlich
+
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+	<!-- Copyright 2017 Pascal Führlich
 
            Licensed under the Apache License, Version 2.0 (the 'License');
            you may not use this file except in compliance with the License.
@@ -15,166 +16,215 @@
            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
            See the License for the specific language governing permissions and
            limitations under the License. -->
-        <title>create an image grid</title>
-        <link rel='apple-touch-icon' sizes='180x180' href='icons/apple-touch-icon.png'>
-        <link rel='icon' type='image/png' href='icons/favicon-32x32.png' sizes='32x32'>
-        <link rel='icon' type='image/png' href='icons/favicon-16x16.png' sizes='16x16'>
-        <link rel='manifest' href='icons/manifest.json'>
-        <link rel='mask-icon' href='icons/safari-pinned-tab.svg' color='#5bbad5'>
-        <link rel='shortcut icon' href='icons/favicon.ico'>
-        <meta name='msapplication-config' content='icons/browserconfig.xml'>
-        <meta name='theme-color' content='#ffffff'>
-        <style type='text/css'>
-            .box {
-                position: absolute;
-                overflow: hidden;
-            }
+	<title>create an image grid</title>
+	<link rel='apple-touch-icon' sizes='180x180' href='icons/apple-touch-icon.png'>
+	<link rel='icon' type='image/png' href='icons/favicon-32x32.png' sizes='32x32'>
+	<link rel='icon' type='image/png' href='icons/favicon-16x16.png' sizes='16x16'>
+	<link rel='manifest' href='icons/manifest.json'>
+	<link rel='mask-icon' href='icons/safari-pinned-tab.svg' color='#5bbad5'>
+	<link rel='shortcut icon' href='icons/favicon.ico'>
+	<meta name='msapplication-config' content='icons/browserconfig.xml'>
+	<meta name='theme-color' content='#ffffff'>
+	<style type='text/css'>
+		.box {
+			position: absolute;
+			overflow: hidden;
+		}
 
-            .box img {
-                position: absolute;
-            }
+		#vertical {
+			float: left;
+		}
 
-            #vertical {
-                float: left;
-            }
+		#wrap {
+			position: relative;
+			float: left;
+			/*will always print, unlike background-color*/
+			/*box-shadow: 0 0 0 1000px green inset;*/
+		}
 
-            #wrap {
-                position: relative;
-                float: left;
-                /*will always print, unlike background-color*/
-                /*box-shadow: 0 0 0 1000px green inset;*/
-            }
+		@media screen {
+			#wrap, #printerMarginBackground {
+				border-style: solid;
+				border-width: 3px;
+				box-sizing: border-box;
+			}
+			#printerMarginBackground {
+				position: relative;
+				left: 25px;
+				margin: 100px auto;
+				/*background-color: #ddd;*/
+			}
+			#horSvg {
+				position: absolute;
+				left: 0;
+				top: -25px;
+				width: 100%;
+				height: 15px;
+				background-color: #ddd;
+			}
+			#verSvg {
+				position: absolute;
+				top: 0;
+				left: -25px;
+				width: 15px;
+				height: 100%;
+				background-color: #ddd;
+			}
+		}
 
-            @media screen {
-                #wrap {
-                    border-style: dashed;
-                }
+		@media print {
+			.noPrint {
+				display: none;
+			}
+			body {
+				margin: 0;
+			}
+		}
+	</style>
+</head>
 
-                #printerMarginBackground {
-                    margin: 100px auto;
-                    /*background-color: #ddd;*/
-                    border-style: dashed;
-                }
-            }
+<body>
+	<div>
 
-            @media print {
-                .noPrint {
-                    display: none;
-                }
+	</div>
+	<div id='printerMarginBackground'>
+		<svg id='horSvg' class='noPrint'>
+            <g stroke-width='2px' stroke='black'></g>
+        </svg>
+		<svg id='verSvg' class='noPrint'>
+            <g stroke-width='2px' stroke='black'></g>
+        </svg>
+		<div id='horizontal' class='noPrint'></div>
+		<div id='vertical' class='noPrint'></div>
+		<div id='wrap'></div>
+	</div>
 
-                body {
-                    margin: 0;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div>
+	<script src='jquery-3.1.1.min.js' integrity='sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=' crossorigin='anonymous'></script>
+	<script type="text/javascript">
+		function line(x1, x2, y1, y2){
+			return $(document.createElementNS('http://www.w3.org/2000/svg', 'line'))
+				.attr('x1', x1)
+				.attr('x2', x2)
+				.attr('y1', y1)
+				.attr('y2', y2)
+		}
+		function horLine(x1, x2){
+			$('#horSvg g')
+				.append(line(x1 + 1 + 'mm', x2 - 1 + 'mm', '50%', '50%'))
+				.append(line(x1 + 1 + 'mm', x1 + 1 + 'mm', '0%', '100%'))
+				.append(line(x2 - 1 + 'mm', x2 - 1 + 'mm', '0%', '100%'))
+		}
+		function verLine(y1, y2){
+			$('#verSvg g')
+				.append(line('50%', '50%', y1 + 1 + 'mm', y2 - 1 + 'mm'))
+				.append(line('0%', '100%', y1 + 1 + 'mm', y1 + 1 + 'mm'))
+				.append(line('0%', '100%', y2 - 1 + 'mm', y2 - 1 + 'mm'))
+		}
+		function scaleImage() {
+			var widthScale = $(this).parent().width() / $(this).prop('naturalWidth')
+			var heightScale = $(this).parent().height() / $(this).prop('naturalHeight')
 
-        </div>
-        <div id='printerMarginBackground'>
-            <div id='horizontal' class='noPrint'></div>
-            <div id='vertical' class='noPrint'></div>
-            <div id='wrap'></div>
-        </div>
+			if (widthScale > heightScale) {
+				$(this)
+					.width(widthScale * $(this).prop('naturalWidth'))
+					.height(widthScale * $(this).prop('naturalHeight'))
+					.css('top', -0.5 * ($(this).height() - $(this).parent().height()))
+			} else {
+				$(this)
+					.width(heightScale * $(this).prop('naturalWidth'))
+					.height(heightScale * $(this).prop('naturalHeight'))
+					.css('left', -0.5 * ($(this).width() - $(this).parent().width()))
+			}
+		}
+		const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
+		function catchDragDrop(e) {
+			e.preventDefault()
+			e.stopPropagation()
+		}
 
-        <script src='https://code.jquery.com/jquery-3.1.1.min.js' integrity='sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=' crossorigin='anonymous'></script>
-        <script type="text/javascript">
-            const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
-            function catchDragDrop(e) {
-                e.preventDefault()
-                e.stopPropagation()
-            }
 
+		var pageWidth = 210
+		var pageHeight = 297
+		$('#printerMarginBackground')
+			.width(pageWidth + 'mm')
+			.height(pageHeight + 'mm')
 
-            var pageWidth = 210
-            var pageHeight = 297
-            $('#printerMarginBackground')
-                .width(pageWidth + 'mm')
-                .height(pageHeight + 'mm')
+		var printerMargin = 15
+		$('#horizontal')
+			.width(1)
+			.height(printerMargin + 'mm')
+		$('#vertical')
+			.width(printerMargin + 'mm')
+			.height(1)
 
-            var printerMargin = 15
-            $('#horizontal')
-                .width(1)
-                .height(printerMargin + 'mm')
-            $('#vertical')
-                .width(printerMargin + 'mm')
-                .height(1)
+		horLine(0, printerMargin)
+		horLine(pageWidth - printerMargin, pageWidth)
+		verLine(0, printerMargin)
+		verLine(pageHeight - printerMargin, pageHeight)
 
-            var printWidth = pageWidth - 2 * printerMargin
-            var printHeight = pageHeight - 2 * printerMargin
-            $('#wrap')
-                .width(printWidth + 'mm')
-                .height(printHeight + 'mm')
+		var printWidth = pageWidth - 2 * printerMargin
+		var printHeight = pageHeight - 2 * printerMargin
+		$('#wrap')
+			.width(printWidth + 'mm')
+			.height(printHeight + 'mm')
 
-            var columns = 3
-            var rows = 4
-            var imageMargin = 3
+		var columns = 3
+		var rows = 4
+		var imageMargin = 3
 
-            var imgWidth = (printWidth - (columns - 1) * imageMargin) / columns
-            var imgHeight = (printHeight - (rows - 1) * imageMargin) / rows
+		var imgWidth = (printWidth - (columns - 1) * imageMargin) / columns
+		var imgHeight = (printHeight - (rows - 1) * imageMargin) / rows
 
-            var blobs = {}
+		var blobs = {}
 
-            function scaleImage(){
-                var widthScale = $(this).parent().width() / $(this).prop('naturalWidth')
-                var heightScale = $(this).parent().height() / $(this).prop('naturalHeight')
+		for (var y = 0; y < rows; y++) {
+			for (var x = 0; x < columns; x++) {
+				var mtop = y * (imageMargin + imgHeight)
+				var mleft = x * (imageMargin + imgWidth)
 
-                if(widthScale > heightScale){
-                    $(this)
-                        .width(widthScale * $(this).prop('naturalWidth'))
-                        .height(widthScale * $(this).prop('naturalHeight'))
-                        .css('top', -0.5 * ($(this).height() - $(this).parent().height()))
-                }else{
-                    $(this)
-                        .width(heightScale * $(this).prop('naturalWidth'))
-                        .height(heightScale * $(this).prop('naturalHeight'))
-                        .css('left', -0.5 * ($(this).width() - $(this).parent().width()))
-                }
-            }
+				horLine(printerMargin + mleft, printerMargin + mleft + imgWidth)
+				verLine(printerMargin + mtop, printerMargin + mtop + imgHeight)
 
-            for (var y = 0; y < rows; y++) {
-                for (var x = 0; x < columns; x++) {
-                    $('<div class="box"><img></div>')
-                        .width(imgWidth + 'mm')
-                        .height(imgHeight + 'mm')
-                        .css('top', y * (imageMargin + imgHeight) + 'mm')
-                        .css('left', x * (imageMargin + imgWidth) + 'mm')
-                        .on('dragenter', catchDragDrop)
-                        .on('dragover', function(e){
-                            catchDragDrop(e)
-                            $(this)
-                                .css('box-shadow', '0 0 0 20px #FFFF33')
-                                .css('z-index', '1')
-                        })
-                        .on('dragleave', function(e){
-                            catchDragDrop(e)
-                            $(this)
-                                .css('box-shadow', 'initial')
-                                .css('z-index', 'initial')
-                        })
-                        .on('drop', (function(lx, ly){
-                            //saving x as lx, otherwise x == columns onDrop for each box
-                            return function(e){
-                                catchDragDrop(e)
-                                if(e.originalEvent.dataTransfer.files.length > 0){
-                                    var mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
-                                    blobs[[lx, ly]] = mURL
-                                    $(this)
-                                        .css('border-style', 'none')
-                                        .find('img')
-                                            .attr('src', mURL)
-                                            .trigger('load')
-                                }
-                                $(this).trigger('dragleave')
-                            }
-                        }) (x, y) )
-                        .appendTo($('#wrap'))
-                        .find('img')
-                            .attr('src', blobs[[x, y]] || placeholder)
-                            .on('load', scaleImage)
-                }
-            }
-        </script>
-    </body>
+				$('<div class="box"><img></div>')
+					.width(imgWidth + 'mm')
+					.height(imgHeight + 'mm')
+					.css('top', mtop + 'mm')
+					.css('left', mleft + 'mm')
+					.on('dragenter', catchDragDrop)
+					.on('dragover', function(e) {
+						catchDragDrop(e)
+						$(this)
+							.css('box-shadow', '0 0 0 20px #FFFF33')
+							.css('z-index', '1')
+					})
+					.on('dragleave', function(e) {
+						catchDragDrop(e)
+						$(this)
+							.css('box-shadow', 'initial')
+							.css('z-index', 'initial')
+					})
+					.on('drop', (function(lx, ly) {
+						//saving x as lx, otherwise x == columns onDrop for each box
+						return function(e) {
+							catchDragDrop(e)
+							if (e.originalEvent.dataTransfer.files.length > 0) {
+								var mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
+								blobs[[lx, ly]] = mURL
+								$(this)
+									.find('img')
+										.attr('src', mURL)
+										.trigger('load')
+							}
+							$(this).trigger('dragleave')
+						}
+					})(x, y))
+					.appendTo($('#wrap'))
+					.find('img')
+						.attr('src', blobs[[x, y]] || placeholder)
+						.on('load', scaleImage)
+			}
+		}
+	</script>
+</body>
+
 </html>
