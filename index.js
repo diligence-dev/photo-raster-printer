@@ -47,17 +47,99 @@ $('#bottomDiv')
 		$(this).children().trigger('mlayout')
 	})
 
-var paperWidth = 210 //mm
-var paperHeight = 297 //mm
+var g = {
+	_paperWidth: 210, //mm
+	_paperHeight: 297, //mm
 
-var printerMargin = 10 //mm
-var imageMargin = 5 //mm
+	_printerMargin: 10, //mm
+	_imageMargin: 5, //mm
 
-var columns = 3 //mm
-var rows = 4 //mm
+	_columns: 3, //mm
+	_rows: 4, //mm
 
-var imageWidth //mm
-var imageHeight //mm
+	_printWidth: 0, //mm
+	_printHeight: 0, //mm
+
+	_imageWidth: 0, //mm
+	_imageHeight: 0, //mm
+
+	calcImageWidth: function(){
+		this._printWidth = this._paperWidth - 2 * this._printerMargin
+		this._imageWidth = (this._printWidth - (this._columns - 1) * this._imageMargin) / this._columns
+	},
+	calcImageHeight: function(){
+		this._printHeight = this._paperHeight - 2 * this._printerMargin
+		this._imageHeight = (this._printHeight - (this._rows - 1) * this._imageMargin) / this._rows
+	},
+
+	paperWidth: function(){
+		return this._paperWidth
+	},
+	setPaperWidth: function(v){
+		this._paperWidth = v
+		this.calcImageWidth()
+		$('#paper').trigger('mlayout')
+	},
+	paperHeight: function(){
+		return this._paperHeight
+	},
+	setPaperHeight: function(v){
+		this._paperHeight = v
+		this.calcImageHeight()
+		$('#paper').trigger('mlayout')
+	},
+
+	printerMargin: function(){
+		return this._printerMargin
+	},
+	setPrinterMargin: function(v){
+		this._printerMargin = v
+		this.calcImageWidth()
+		this.calcImageHeight()
+		$('#printArea').trigger('mlayout')
+	},
+	imageMargin: function(){
+		return this._imageMargin
+	},
+	setImageMargin: function(v){
+		this._imageMargin = v
+		this.calcImageWidth()
+		this.calcImageHeight()
+		$('.box, .measure').trigger('mlayout')
+	},
+
+	columns: function(){
+		return this._columns
+	},
+	setColumns: function(v){
+		this._columns = v
+		this.calcImageWidth()
+		// TODO add boxes/measures
+		$('.box, .measure').trigger('mlayout')
+	},
+	rows: function(){
+		return this._rows
+	},
+	setRows: function(v){
+		this._rows = v
+		this.calcImageHeight()
+		// TODO add boxes/measures
+		$('.box, .measure').trigger('mlayout')
+	},
+
+	printWidth: function(){
+		return this._printWidth
+	},
+	printHeight: function(){
+		return this._printHeight
+	},
+	imageWidth: function(){
+		return this._imageWidth
+	},
+	imageHeight: function(){
+		return this._imageHeight
+	},
+}
 
 var blobs = {}
 
@@ -97,26 +179,26 @@ function setVerticalLines(lines, mheight) {
 addMeasure('#topDiv', function(){
 	$(this)
 		.css('left', 0)
-		.width(printerMargin + 'mm')
+		.width(g.printerMargin() + 'mm')
 	setHorizontalLines($(this).find('line'), $(this).width())
 })
 addMeasure('#topDiv', function(){
 	$(this)
 		.css('right', 0)
-		.width(printerMargin + 'mm')
+		.width(g.printerMargin() + 'mm')
 	setHorizontalLines($(this).find('line'), $(this).width())
 })
 
 addMeasure('#leftDiv', function(){
 	$(this)
 		.css('top', 0)
-		.height(printerMargin + 'mm')
+		.height(g.printerMargin() + 'mm')
 	setVerticalLines($(this).find('line'), $(this).height())
 })
 addMeasure('#leftDiv', function(){
 	$(this)
 		.css('bottom', 0)
-		.height(printerMargin + 'mm')
+		.height(g.printerMargin() + 'mm')
 	setVerticalLines($(this).find('line'), $(this).height())
 })
 
@@ -130,40 +212,30 @@ $(window).on('resize', function(){
 
 $('#paper').on('mlayout', function(e){stopProp(e)
 	$(this)
-		.width(paperWidth + 'mm')
-		.height(paperHeight + 'mm')
+		.width(g.paperWidth() + 'mm')
+		.height(g.paperHeight() + 'mm')
 	$('#printArea').trigger('mlayout')
 })
 
 $('#printArea').on('mlayout', function(e){stopProp(e)
-	var printWidth = paperWidth - 2 * printerMargin
-	var printHeight = paperHeight - 2 * printerMargin
 	$(this)
-		.css('left', printerMargin + 'mm')
-		.css('top', printerMargin + 'mm')
-		.width(printWidth + 'mm')
-		.height(printHeight + 'mm')
-	layoutBoxMeasure()
-})
-
-function layoutBoxMeasure() {
-	var printWidth = paperWidth - 2 * printerMargin
-	var printHeight = paperHeight - 2 * printerMargin
-	imageWidth = (printWidth - (columns - 1) * imageMargin) / columns
-	imageHeight = (printHeight - (rows - 1) * imageMargin) / rows
+		.css('left', g.printerMargin() + 'mm')
+		.css('top', g.printerMargin() + 'mm')
+		.width(g.printWidth() + 'mm')
+		.height(g.printHeight() + 'mm')
 	$('.box, .measure').trigger('mlayout')
-}
+})
 
 function boxLayoutFunction(mcol, mrow){
 	return function(e){stopProp(e)
-		if(mcol >= columns || mrow >= rows){
+		if(mcol >= g.imageMargin() || mrow >= g.rows()){
 			$(this).remove()
 		}else{
 			$(this)
-				.width(imageWidth + 'mm')
-				.height(imageHeight + 'mm')
-				.css('top', mrow * (imageMargin + imageHeight) + 'mm')
-				.css('left', mcol * (imageMargin + imageWidth) + 'mm')
+				.width(g.imageWidth() + 'mm')
+				.height(g.imageHeight() + 'mm')
+				.css('top', mrow * (g.imageMargin() + g.imageHeight()) + 'mm')
+				.css('left', mcol * (g.imageMargin() + g.imageWidth()) + 'mm')
 				.find('img').trigger('load')
 		}
 	}
@@ -182,7 +254,7 @@ function boxDragLeave(e) {stopProp(e)
 }
 
 function boxDropFunction(mcol, mrow) {
-	//saving x as lx, otherwise x == columns onDrop for each box
+	//saving x as lx, otherwise x == g.imageMargin() onDrop for each box
 	return function(e) {stopProp(e)
 		if (e.originalEvent.dataTransfer.files.length > 0) {
 			var mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
@@ -212,8 +284,8 @@ function scaleImage() {
 	}
 }
 
-for (var col = 0; col < columns; col++) {
-	for (var row = 0; row < rows; row++) {
+for (var col = 0; col < g.columns(); col++) {
+	for (var row = 0; row < g.rows(); row++) {
 		$('<div class="box"><img></div>')
 			.appendTo($('#printArea'))
 			.on('mlayout', boxLayoutFunction(col, row))
@@ -227,16 +299,16 @@ for (var col = 0; col < columns; col++) {
 	}
 }
 
-for (var col = 0; col < columns; col++) {
+for (var col = 0; col < g.columns(); col++) {
 	if(col > 0){
 		addMeasure('#topDiv', (function(mcol){
 			return function(){
-				if(mcol >= columns){
+				if(mcol >= g.imageMargin()){
 					$(this).remove()
 				}else{
 					$(this)
-						.css('left', printerMargin + mcol * (imageWidth + imageMargin) - imageMargin + 'mm')
-						.width(imageMargin + 'mm')
+						.css('left', g.printerMargin() + mcol * (g.imageWidth() + g.imageMargin()) - g.imageMargin() + 'mm')
+						.width(g.imageMargin() + 'mm')
 					setHorizontalLines($(this).find('line'), $(this).width())
 				}
 			}
@@ -244,28 +316,28 @@ for (var col = 0; col < columns; col++) {
 	}
 	addMeasure('#topDiv', (function(mcol){
 		return function(){
-			if(mcol >= columns){
+			if(mcol >= g.imageMargin()){
 				$(this).remove()
 			}else{
 				$(this)
-					.css('left', printerMargin + mcol * (imageWidth + imageMargin) + 'mm')
-					.width(imageWidth + 'mm')
+					.css('left', g.printerMargin() + mcol * (g.imageWidth() + g.imageMargin()) + 'mm')
+					.width(g.imageWidth() + 'mm')
 				setHorizontalLines($(this).find('line'), $(this).width())
 			}
 		}
 	})(col))
 }
 
-for (var row = 0; row < rows; row++) {
+for (var row = 0; row < g.rows(); row++) {
 	if(row > 0){
 		addMeasure('#leftDiv', (function(mrow){
 			return function(){
-				if(mrow >= rows){
+				if(mrow >= g.rows()){
 					$(this).remove()
 				}else{
 					$(this)
-						.css('top', printerMargin + mrow * (imageHeight + imageMargin) - imageMargin + 'mm')
-						.height(imageMargin + 'mm')
+						.css('top', g.printerMargin() + mrow * (g.imageHeight() + g.imageMargin()) - g.imageMargin() + 'mm')
+						.height(g.imageMargin() + 'mm')
 					setVerticalLines($(this).find('line'), $(this).height())
 				}
 			}
@@ -273,12 +345,12 @@ for (var row = 0; row < rows; row++) {
 	}
 	addMeasure('#leftDiv', (function(mrow){
 		return function(){
-			if(mrow >= rows){
+			if(mrow >= g.rows()){
 				$(this).remove()
 			}else{
 				$(this)
-					.css('top', printerMargin + mrow * (imageHeight + imageMargin) + 'mm')
-					.height(imageHeight + 'mm')
+					.css('top', g.printerMargin() + mrow * (g.imageHeight() + g.imageMargin()) + 'mm')
+					.height(g.imageHeight() + 'mm')
 				setVerticalLines($(this).find('line'), $(this).height())
 			}
 		}
@@ -286,12 +358,13 @@ for (var row = 0; row < rows; row++) {
 }
 
 function mclick() {
-	rows += -1
-	layoutBoxMeasure()
+	g.setRows(g.rows()+1)
 }
 
 
 $(document).ready(function(){
+	g.calcImageWidth()
+	g.calcImageHeight()
 	$('#paper').trigger('mlayout')
 	$(window).trigger('resize')
 })
