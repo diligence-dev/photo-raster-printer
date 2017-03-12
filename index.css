@@ -1,0 +1,28 @@
+body {
+	margin: 0;
+	padding: 0;
+}
+#printArea {
+	box-shadow: inset 0 0 0 1000px #dd0;
+}
+#paper {		box-shadow: inset 0 0 0 1000px #2dd;	}
+.box {
+	position: absolute;
+	overflow: hidden;
+	box-shadow: inset 0 0 0 1000px red;
+}
+
+@media screen {
+	.screenAbsolute {
+		position: absolute;
+	}
+	.sideDiv {
+		background-color: green;
+	}
+}
+
+@media print {
+	.sideDiv {
+		display: none;
+	}
+}

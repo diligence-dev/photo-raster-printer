@@ -3,12 +3,33 @@
 	<head>
 		<meta charset="utf-8">
 		<title></title>
+		<style media="screen">
+			div, button {
+				width: 50px;
+				height: 30px;
+				position: absolute;
+			}
+		</style>
 	</head>
 	<body>
-		<input id='a' type="text" name="" value="25">
-		<script src="jquery-3.1.1.min.js" charset="utf-8"></script>
+		<script src="../jquery-3.1.1.min.js" charset="utf-8"></script>
 		<script type="text/javascript">
-			// var ma = $('#a')
+			// for (var i = 0; i < 5; i++) {
+			// 	$('<div><button>clickme</button></div>')
+			// 		.appendTo('body')
+			// 		.addClass('mq')
+			// 		.css('left', i*100)
+			// 		.on('mlayout', (function(i){
+			// 			return function(){
+			// 				$(this).css('top', i * 100)
+			// 			}
+			// 		})(i))
+			// 		.find('button')
+			// 			.click(function(){
+			// 				console.log('click');
+			// 				$(this).parent().trigger('mlayout')
+			// 			})
+			// }
 
 		</script>
 	</body>
