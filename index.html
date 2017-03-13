@@ -1,180 +1,46 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-        <!-- Copyright 2017 Pascal Führlich
 
-           Licensed under the Apache License, Version 2.0 (the 'License');
-           you may not use this file except in compliance with the License.
-           You may obtain a copy of the License at
+	<head>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+		<!-- Copyright 2017 Pascal Führlich
 
-             http://www.apache.org/licenses/LICENSE-2.0
+	           Licensed under the Apache License, Version 2.0 (the 'License');
+	           you may not use this file except in compliance with the License.
+	           You may obtain a copy of the License at
 
-           Unless required by applicable law or agreed to in writing, software
-           distributed under the License is distributed on an 'AS IS' BASIS,
-           WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-           See the License for the specific language governing permissions and
-           limitations under the License. -->
-        <title>create an image grid</title>
-        <link rel='apple-touch-icon' sizes='180x180' href='icons/apple-touch-icon.png'>
-        <link rel='icon' type='image/png' href='icons/favicon-32x32.png' sizes='32x32'>
-        <link rel='icon' type='image/png' href='icons/favicon-16x16.png' sizes='16x16'>
-        <link rel='manifest' href='icons/manifest.json'>
-        <link rel='mask-icon' href='icons/safari-pinned-tab.svg' color='#5bbad5'>
-        <link rel='shortcut icon' href='icons/favicon.ico'>
-        <meta name='msapplication-config' content='icons/browserconfig.xml'>
-        <meta name='theme-color' content='#ffffff'>
-        <style type='text/css'>
-            .box {
-                position: absolute;
-                overflow: hidden;
-            }
+	             http://www.apache.org/licenses/LICENSE-2.0
 
-            .box img {
-                position: absolute;
-            }
+	           Unless required by applicable law or agreed to in writing, software
+	           distributed under the License is distributed on an 'AS IS' BASIS,
+	           WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	           See the License for the specific language governing permissions and
+	           limitations under the License. -->
+		<title>create an image grid</title>
 
-            #vertical {
-                float: left;
-            }
+		<link rel='apple-touch-icon' sizes='180x180' href='icons/apple-touch-icon.png'>
+		<link rel='icon' type='image/png' href='icons/favicon-32x32.png' sizes='32x32'>
+		<link rel='icon' type='image/png' href='icons/favicon-16x16.png' sizes='16x16'>
+		<link rel='manifest' href='icons/manifest.json'>
+		<link rel='mask-icon' href='icons/safari-pinned-tab.svg' color='#5bbad5'>
+		<link rel='shortcut icon' href='icons/favicon.ico'>
+		<meta name='msapplication-config' content='icons/browserconfig.xml'>
+		<meta name='theme-color' content='#ffffff'>
 
-            #wrap {
-                position: relative;
-                float: left;
-                /*will always print, unlike background-color*/
-                /*box-shadow: 0 0 0 1000px green inset;*/
-            }
-
-            @media screen {
-                #wrap {
-                    border-style: dashed;
-                }
-
-                #printerMarginBackground {
-                    margin: 100px auto;
-                    /*background-color: #ddd;*/
-                    border-style: dashed;
-                }
-            }
-
-            @media print {
-                .noPrint {
-                    display: none;
-                }
-
-                body {
-                    margin: 0;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div>
-
-        </div>
-        <div id='printerMarginBackground'>
-            <div id='horizontal' class='noPrint'></div>
-            <div id='vertical' class='noPrint'></div>
-            <div id='wrap'></div>
-        </div>
-
-        <script src='https://code.jquery.com/jquery-3.1.1.min.js' integrity='sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=' crossorigin='anonymous'></script>
-        <script type="text/javascript">
-            const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
-            function catchDragDrop(e) {
-                e.preventDefault()
-                e.stopPropagation()
-            }
+		<link rel="stylesheet" type="text/css" href="/index.css">
+	</head>
+	<body>
+		<button onclick="mclick()">click</button>
+		<div id="paper" class="screenAbsolute">
+			<div id="printArea" class="screenAbsolute"></div>
+			<div id="topDiv" class="horizontal sideDiv screenAbsolute"></div>
+			<div id="rightDiv" class="vertical sideDiv screenAbsolute"></div>
+			<div id="bottomDiv" class="horizontal sideDiv screenAbsolute"></div>
+			<div id="leftDiv" class="vertical sideDiv screenAbsolute"></div>
+		</div>
 
 
-            var pageWidth = 210
-            var pageHeight = 297
-            $('#printerMarginBackground')
-                .width(pageWidth + 'mm')
-                .height(pageHeight + 'mm')
-
-            var printerMargin = 15
-            $('#horizontal')
-                .width(1)
-                .height(printerMargin + 'mm')
-            $('#vertical')
-                .width(printerMargin + 'mm')
-                .height(1)
-
-            var printWidth = pageWidth - 2 * printerMargin
-            var printHeight = pageHeight - 2 * printerMargin
-            $('#wrap')
-                .width(printWidth + 'mm')
-                .height(printHeight + 'mm')
-
-            var columns = 3
-            var rows = 4
-            var imageMargin = 3
-
-            var imgWidth = (printWidth - (columns - 1) * imageMargin) / columns
-            var imgHeight = (printHeight - (rows - 1) * imageMargin) / rows
-
-            var blobs = {}
-
-            function scaleImage(){
-                var widthScale = $(this).parent().width() / $(this).prop('naturalWidth')
-                var heightScale = $(this).parent().height() / $(this).prop('naturalHeight')
-
-                if(widthScale > heightScale){
-                    $(this)
-                        .width(widthScale * $(this).prop('naturalWidth'))
-                        .height(widthScale * $(this).prop('naturalHeight'))
-                        .css('top', -0.5 * ($(this).height() - $(this).parent().height()))
-                }else{
-                    $(this)
-                        .width(heightScale * $(this).prop('naturalWidth'))
-                        .height(heightScale * $(this).prop('naturalHeight'))
-                        .css('left', -0.5 * ($(this).width() - $(this).parent().width()))
-                }
-            }
-
-            for (var y = 0; y < rows; y++) {
-                for (var x = 0; x < columns; x++) {
-                    $('<div class="box"><img></div>')
-                        .width(imgWidth + 'mm')
-                        .height(imgHeight + 'mm')
-                        .css('top', y * (imageMargin + imgHeight) + 'mm')
-                        .css('left', x * (imageMargin + imgWidth) + 'mm')
-                        .on('dragenter', catchDragDrop)
-                        .on('dragover', function(e){
-                            catchDragDrop(e)
-                            $(this)
-                                .css('box-shadow', '0 0 0 20px #FFFF33')
-                                .css('z-index', '1')
-                        })
-                        .on('dragleave', function(e){
-                            catchDragDrop(e)
-                            $(this)
-                                .css('box-shadow', 'initial')
-                                .css('z-index', 'initial')
-                        })
-                        .on('drop', (function(lx, ly){
-                            //saving x as lx, otherwise x == columns onDrop for each box
-                            return function(e){
-                                catchDragDrop(e)
-                                if(e.originalEvent.dataTransfer.files.length > 0){
-                                    var mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
-                                    blobs[[lx, ly]] = mURL
-                                    $(this)
-                                        .css('border-style', 'none')
-                                        .find('img')
-                                            .attr('src', mURL)
-                                            .trigger('load')
-                                }
-                                $(this).trigger('dragleave')
-                            }
-                        }) (x, y) )
-                        .appendTo($('#wrap'))
-                        .find('img')
-                            .attr('src', blobs[[x, y]] || placeholder)
-                            .on('load', scaleImage)
-                }
-            }
-        </script>
-    </body>
+		<script src='/jquery-3.1.1.min.js' integrity='sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=' crossorigin='anonymous'></script>
+		<script src="/index.js" charset="utf-8"></script>
+	</body>
 </html>
