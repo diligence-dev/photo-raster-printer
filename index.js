@@ -47,101 +47,103 @@ $('#bottomDiv')
 		$(this).children().trigger('mlayout')
 	})
 
-var g = {
-	_paperWidth: 210, //mm
-	_paperHeight: 297, //mm
+const g = (function(){
+	let _paperWidth = 210 //mm
+	let _paperHeight = 297 //mm
 
-	_printerMargin: 10, //mm
-	_imageMargin: 5, //mm
+	let _printerMargin = 10 //mm
+	let _imageMargin = 5 //mm
 
-	_columns: 3, //mm
-	_rows: 4, //mm
+	let _columns = 3 //mm
+	let _rows = 4 //mm
 
-	_printWidth: 0, //mm
-	_printHeight: 0, //mm
+	let _printWidth = 0 //mm
+	let _printHeight = 0 //mm
 
-	_imageWidth: 0, //mm
-	_imageHeight: 0, //mm
+	let _imageWidth = 0 //mm
+	let _imageHeight = 0 //mm
 
-	calcImageWidth: function(){
-		this._printWidth = this._paperWidth - 2 * this._printerMargin
-		this._imageWidth = (this._printWidth - (this._columns - 1) * this._imageMargin) / this._columns
-	},
-	calcImageHeight: function(){
-		this._printHeight = this._paperHeight - 2 * this._printerMargin
-		this._imageHeight = (this._printHeight - (this._rows - 1) * this._imageMargin) / this._rows
-	},
+	return {
+		calcImageWidth: function(){
+			_printWidth = _paperWidth - 2 * _printerMargin
+			_imageWidth = (_printWidth - (_columns - 1) * _imageMargin) / _columns
+		},
+		calcImageHeight: function(){
+			_printHeight = _paperHeight - 2 * _printerMargin
+			_imageHeight = (_printHeight - (_rows - 1) * _imageMargin) / _rows
+		},
 
-	paperWidth: function(){
-		return this._paperWidth
-	},
-	setPaperWidth: function(v){
-		this._paperWidth = v
-		this.calcImageWidth()
-		$('#paper').trigger('mlayout')
-	},
-	paperHeight: function(){
-		return this._paperHeight
-	},
-	setPaperHeight: function(v){
-		this._paperHeight = v
-		this.calcImageHeight()
-		$('#paper').trigger('mlayout')
-	},
+		paperWidth: function(){
+			return _paperWidth
+		},
+		setPaperWidth: function(v){
+			_paperWidth = v
+			this.calcImageWidth()
+			$('#paper').trigger('mlayout')
+		},
+		paperHeight: function(){
+			return _paperHeight
+		},
+		setPaperHeight: function(v){
+			_paperHeight = v
+			this.calcImageHeight()
+			$('#paper').trigger('mlayout')
+		},
 
-	printerMargin: function(){
-		return this._printerMargin
-	},
-	setPrinterMargin: function(v){
-		this._printerMargin = v
-		this.calcImageWidth()
-		this.calcImageHeight()
-		$('#printArea').trigger('mlayout')
-	},
-	imageMargin: function(){
-		return this._imageMargin
-	},
-	setImageMargin: function(v){
-		this._imageMargin = v
-		this.calcImageWidth()
-		this.calcImageHeight()
-		$('.box, .measure').trigger('mlayout')
-	},
+		printerMargin: function(){
+			return _printerMargin
+		},
+		setPrinterMargin: function(v){
+			_printerMargin = v
+			this.calcImageWidth()
+			this.calcImageHeight()
+			$('#printArea').trigger('mlayout')
+		},
+		imageMargin: function(){
+			return _imageMargin
+		},
+		setImageMargin: function(v){
+			_imageMargin = v
+			this.calcImageWidth()
+			this.calcImageHeight()
+			$('.box, .measure').trigger('mlayout')
+		},
 
-	columns: function(){
-		return this._columns
-	},
-	setColumns: function(v){
-		this._columns = v
-		this.calcImageWidth()
-		// TODO add boxes/measures
-		$('.box, .measure').trigger('mlayout')
-	},
-	rows: function(){
-		return this._rows
-	},
-	setRows: function(v){
-		this._rows = v
-		this.calcImageHeight()
-		// TODO add boxes/measures
-		$('.box, .measure').trigger('mlayout')
-	},
+		columns: function(){
+			return _columns
+		},
+		setColumns: function(v){
+			_columns = v
+			this.calcImageWidth()
+			// TODO add boxes/measures
+			$('.box, .measure').trigger('mlayout')
+		},
+		rows: function(){
+			return _rows
+		},
+		setRows: function(v){
+			_rows = v
+			this.calcImageHeight()
+			// TODO add boxes/measures
+			$('.box, .measure').trigger('mlayout')
+		},
 
-	printWidth: function(){
-		return this._printWidth
-	},
-	printHeight: function(){
-		return this._printHeight
-	},
-	imageWidth: function(){
-		return this._imageWidth
-	},
-	imageHeight: function(){
-		return this._imageHeight
-	},
-}
+		printWidth: function(){
+			return _printWidth
+		},
+		printHeight: function(){
+			return _printHeight
+		},
+		imageWidth: function(){
+			return _imageWidth
+		},
+		imageHeight: function(){
+			return _imageHeight
+		},
+	}
+}())
 
-var blobs = {}
+const blobs = {}
 
 function setHorizontalLines(lines, mwidth) {
 	lines[0].setAttribute('x1', 5)
@@ -257,7 +259,7 @@ function boxDropFunction(mcol, mrow) {
 	//saving x as lx, otherwise x == g.imageMargin() onDrop for each box
 	return function(e) {stopProp(e)
 		if (e.originalEvent.dataTransfer.files.length > 0) {
-			var mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
+			let mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
 			blobs[[mcol, mrow]] = mURL
 			$(this).find('img')
 				.attr('src', mURL)
@@ -268,8 +270,8 @@ function boxDropFunction(mcol, mrow) {
 }
 
 function scaleImage() {
-	var widthScale = $(this).parent().width() / $(this).prop('naturalWidth')
-	var heightScale = $(this).parent().height() / $(this).prop('naturalHeight')
+	let widthScale = $(this).parent().width() / $(this).prop('naturalWidth')
+	let heightScale = $(this).parent().height() / $(this).prop('naturalHeight')
 
 	if (widthScale > heightScale) {
 		$(this)
@@ -284,8 +286,8 @@ function scaleImage() {
 	}
 }
 
-for (var col = 0; col < g.columns(); col++) {
-	for (var row = 0; row < g.rows(); row++) {
+for (let col = 0; col < g.columns(); col++) {
+	for (let row = 0; row < g.rows(); row++) {
 		$('<div class="box"><img></div>')
 			.appendTo($('#printArea'))
 			.on('mlayout', boxLayoutFunction(col, row))
@@ -299,7 +301,7 @@ for (var col = 0; col < g.columns(); col++) {
 	}
 }
 
-for (var col = 0; col < g.columns(); col++) {
+for (let col = 0; col < g.columns(); col++) {
 	if(col > 0){
 		addMeasure('#topDiv', (function(mcol){
 			return function(){
@@ -328,7 +330,7 @@ for (var col = 0; col < g.columns(); col++) {
 	})(col))
 }
 
-for (var row = 0; row < g.rows(); row++) {
+for (let row = 0; row < g.rows(); row++) {
 	if(row > 0){
 		addMeasure('#leftDiv', (function(mrow){
 			return function(){
@@ -357,9 +359,10 @@ for (var row = 0; row < g.rows(); row++) {
 	})(row))
 }
 
-function mclick() {
+$('#mbutton').click(function(){
 	g.setRows(g.rows()+1)
-}
+})
+
 
 
 $(document).ready(function(){
