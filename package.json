@@ -1,0 +1,28 @@
+{
+  "name": "image-grid-printer",
+  "version": "0.8.0",
+  "description": "a free browser utility for creating image grids to print directly or save as pdf",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "budo": "^9.4.7"
+  },
+  "devDependencies": {
+    "browserify": "^14.1.0",
+    "budo": "^9.4.7",
+    "jquery": "^3.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "browserify docs/index.js > docs/bundle.js",
+	"dev": "budo --dir docs/ --live --open docs/index.js:bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "image-grid-printer@code.hpi.uni-potsdam.de:image-grid-printer.git"
+  },
+  "author": "Pascal Führlich",
+  "license": "Apache-2.0"
+}

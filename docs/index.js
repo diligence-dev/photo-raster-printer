@@ -1,10 +1,30 @@
+const $ = require('jquery')
+
 const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
 
 const sideDivWidth = 80 //px
 const sideDivHeight = 50 //px
 const sideDivMargin = 10 //px
 
-let g
+console.log('hi');
+
+
+let g = require('./varstore')({
+	paperWidth: 210, //mm
+	paperHeight: 297, //mm
+
+	printerMargin: 10, //mm
+	imageMargin: 5, //mm
+
+	columns: 3,
+	rows: 4,
+
+	printWidth: 0, //mm
+	printHeight: 0, //mm
+
+	imageWidth: 0, //mm
+	imageHeight: 0, //mm
+})
 
 function stopProp(e) {
 	e.stopPropagation()
@@ -78,14 +98,14 @@ function scaleImage() {
 
 	if (widthScale > heightScale) {
 		$(this)
-		.width(widthScale * $(this).prop('naturalWidth'))
-		.height(widthScale * $(this).prop('naturalHeight'))
-		.css('top', -0.5 * ($(this).height() - $(this).parent().height()))
+			.width(widthScale * $(this).prop('naturalWidth'))
+			.height(widthScale * $(this).prop('naturalHeight'))
+			.css('top', -0.5 * ($(this).height() - $(this).parent().height()))
 	} else {
 		$(this)
-		.width(heightScale * $(this).prop('naturalWidth'))
-		.height(heightScale * $(this).prop('naturalHeight'))
-		.css('left', -0.5 * ($(this).width() - $(this).parent().width()))
+			.width(heightScale * $(this).prop('naturalWidth'))
+			.height(heightScale * $(this).prop('naturalHeight'))
+			.css('left', -0.5 * ($(this).width() - $(this).parent().width()))
 	}
 }
 
@@ -318,6 +338,7 @@ g = (function(){
 		},
 	}
 }())
+
 
 addMeasure('#topDiv', function(){
 	$(this)
