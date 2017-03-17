@@ -2,7 +2,7 @@ module.exports = function(varObj) {
 	let pub = {}
 
 	for (let iprop in varObj) {
-		varObj[iprop + 'callbacks'] = []
+		varObj[iprop + '_callbacks'] = []
 
 		;(function(prop) {
 			pub['on_' + prop + '_changed'] = function(func) {

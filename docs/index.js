@@ -1,49 +1,30 @@
 const $ = require('jquery')
+const g = require('./mvarstore.js')()
 
 const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
-
 const sideDivWidth = 80 //px
 const sideDivHeight = 50 //px
 const sideDivMargin = 10 //px
-
-console.log('hi');
-
-
-let g = require('./varstore')({
-	paperWidth: 210, //mm
-	paperHeight: 297, //mm
-
-	printerMargin: 10, //mm
-	imageMargin: 5, //mm
-
-	columns: 3,
-	rows: 4,
-
-	printWidth: 0, //mm
-	printHeight: 0, //mm
-
-	imageWidth: 0, //mm
-	imageHeight: 0, //mm
-})
 
 function stopProp(e) {
 	e.stopPropagation()
 	e.preventDefault()
 }
 
-function addMeasure(targetSelector, layoutFunc, inputFunc) {
-	$('<div class="measure screenAbsolute"></div>')
-		.append('<svg><g stroke-width="2px" stroke="black"><line/><line/><line/></g></svg>')
-		.append('<input type="number">')
+function addMeasure(targetSelector, inputClass, inputValue, layoutFunc, inputFunc) {
+	// let inp = $('<input class="' + inputClass + '" type="number" value="' + inputValue + '">')
+	let inp = $('<input class="' + inputClass + '" type="number">')
+		.change(function(){
+			$.proxy(inputFunc, $(this))()
+		})
+
+	$('<div class="measure screenAbsolute"><svg><g stroke-width="2px" stroke="black"><line/><line/><line/></g></svg></div>')
+		.append(inp)
 		.on('mlayout', function(e){stopProp(e)
 			//execute bound to this
 			$.proxy(layoutFunc, $(this))()
 		})
 		.appendTo(targetSelector)
-		.find('input')
-			.change(function(){
-				$.proxy(inputFunc, $(this))()
-			})
 }
 
 $('#topDiv')
@@ -112,33 +93,33 @@ function scaleImage() {
 function setHorizontalLines(lines, mwidth) {
 	lines[0].setAttribute('x1', 5)
 	lines[0].setAttribute('x2', mwidth - 5)
-	lines[0].setAttribute('y1', '50%')
-	lines[0].setAttribute('y2', '50%')
+	lines[0].setAttribute('y1', '60%')
+	lines[0].setAttribute('y2', '60%')
 
 	lines[1].setAttribute('x1', 5)
 	lines[1].setAttribute('x2', 5)
-	lines[1].setAttribute('y1', '0%')
+	lines[1].setAttribute('y1', '20%')
 	lines[1].setAttribute('y2', '100%')
 
 	lines[2].setAttribute('x1', mwidth - 5)
 	lines[2].setAttribute('x2', mwidth - 5)
-	lines[2].setAttribute('y1', '0%')
+	lines[2].setAttribute('y1', '20%')
 	lines[2].setAttribute('y2', '100%')
 }
 function setVerticalLines(lines, mheight) {
 	lines[0].setAttribute('y1', 5)
 	lines[0].setAttribute('y2', mheight - 5)
-	lines[0].setAttribute('x1', '50%')
-	lines[0].setAttribute('x2', '50%')
+	lines[0].setAttribute('x1', '60%')
+	lines[0].setAttribute('x2', '60%')
 
 	lines[1].setAttribute('y1', 5)
 	lines[1].setAttribute('y2', 5)
-	lines[1].setAttribute('x1', '0%')
+	lines[1].setAttribute('x1', '20%')
 	lines[1].setAttribute('x2', '100%')
 
 	lines[2].setAttribute('y1', mheight - 5)
 	lines[2].setAttribute('y2', mheight - 5)
-	lines[2].setAttribute('x1', '0%')
+	lines[2].setAttribute('x1', '20%')
 	lines[2].setAttribute('x2', '100%')
 }
 
@@ -157,224 +138,141 @@ function boxLayoutFunction(mcol, mrow){
 	}
 }
 
-g = (function(){
-	let _paperWidth = 210 //mm
-	let _paperHeight = 297 //mm
+g.on_paperWidth_changed( () => { $('#paper').trigger('mlayout') })
+g.on_paperHeight_changed( () => { $('#paper').trigger('mlayout') })
 
-	let _printerMargin = 10 //mm
-	let _imageMargin = 5 //mm
+g.on_printerMargin_changed( () => { $('#printArea').trigger('mlayout') })
+g.on_imageMargin_changed( () => { $('.box, .measure').trigger('mlayout') })
 
-	let _columns = 3
-	let _rows = 4
+g.on_columns_changed( () => { $('.box, .measure').trigger('mlayout') })
+g.on_rows_changed( () => { $('.box, .measure').trigger('mlayout') })
 
-	let _printWidth = 0 //mm
-	let _printHeight = 0 //mm
+g.preColumnsChange(function(prevColumns, currColumns){
+	for (let col = prevColumns; col < currColumns; col++) {
+		for (let row = 0; row < g.rows(); row++) {
+			//new image box
+			$('<div class="box"><img></div>')
+				.appendTo($('#printArea'))
+				.on('mlayout', boxLayoutFunction(col, row))
+				.on('dragenter', boxDragEnter)
+				.on('dragover', stopProp)
+				.on('dragleave', boxDragLeave)
+				.on('drop', boxDropFunction(col, row))
+				.find('img')
+					.attr('src', blobs[[col, row]] || placeholder)
+					.on('load', scaleImage)
+		}
 
-	let _imageWidth = 0 //mm
-	let _imageHeight = 0 //mm
-
-	return {
-		calcImageWidth: function(){
-			_printWidth = _paperWidth - 2 * _printerMargin
-			_imageWidth = (_printWidth - (_columns - 1) * _imageMargin) / _columns
-		},
-		calcImageHeight: function(){
-			_printHeight = _paperHeight - 2 * _printerMargin
-			_imageHeight = (_printHeight - (_rows - 1) * _imageMargin) / _rows
-		},
-
-		paperWidth: function(){
-			return _paperWidth
-		},
-		setPaperWidth: function(v){
-			_paperWidth = v
-			this.calcImageWidth()
-			$('#paper').trigger('mlayout')
-		},
-		paperHeight: function(){
-			return _paperHeight
-		},
-		setPaperHeight: function(v){
-			_paperHeight = v
-			this.calcImageHeight()
-			$('#paper').trigger('mlayout')
-		},
-
-		printerMargin: function(){
-			return _printerMargin
-		},
-		setPrinterMargin: function(v){
-			_printerMargin = v
-			this.calcImageWidth()
-			this.calcImageHeight()
-			$('#printArea').trigger('mlayout')
-		},
-		imageMargin: function(){
-			return _imageMargin
-		},
-		setImageMargin: function(v){
-			_imageMargin = v
-			this.calcImageWidth()
-			this.calcImageHeight()
-			$('.box, .measure').trigger('mlayout')
-		},
-
-		columns: function(){
-			return _columns
-		},
-		setColumns: function(v){
-			//add new imageboxes and measures
-			for (let col = _columns; col < v; col++) {
-				for (let row = 0; row < _rows; row++) {
-					//new image box
-					let x = $('<div class="box"><img></div>')
-					x
-						.appendTo($('#printArea'))
-						.on('mlayout', boxLayoutFunction(col, row))
-						.on('dragenter', boxDragEnter)
-						.on('dragover', stopProp)
-						.on('dragleave', boxDragLeave)
-						.on('drop', boxDropFunction(col, row))
-						.find('img')
-							.attr('src', blobs[[col, row]] || placeholder)
-							.on('load', scaleImage)
-				}
-
-				//new margin measure
-				if(col > 0){
-					addMeasure('#topDiv', (function(mcol){
-						return function(){
-							if(mcol >= g.columns()){
-								$(this).remove()
-							}else{
-								$(this)
-									.css('left', g.printerMargin() + mcol * (g.imageWidth() + g.imageMargin()) - g.imageMargin() + 'mm')
-									.width(g.imageMargin() + 'mm')
-								setHorizontalLines($(this).find('line'), $(this).width())
-							}
-						}
-					})(col))
-				}
-				//new image box measure
-				addMeasure('#topDiv', (function(mcol){
-					return function(){
-						if(mcol >= g.columns()){
-							$(this).remove()
-						}else{
-							$(this)
-								.css('left', g.printerMargin() + mcol * (g.imageWidth() + g.imageMargin()) + 'mm')
-								.width(g.imageWidth() + 'mm')
-							setHorizontalLines($(this).find('line'), $(this).width())
-						}
+		//new margin measure
+		if(col > 0){
+			addMeasure('#topDiv', 'imageMarginInp', g.imageMargin(), (function(mcol){
+				return function(){
+					if(mcol >= g.columns()){
+						$(this).remove()
+					}else{
+						$(this)
+							.css('left', g.printerMargin() + mcol * (g.imageWidth() + g.imageMargin()) - g.imageMargin() + 'mm')
+							.width(g.imageMargin() + 'mm')
+						setHorizontalLines($(this).find('line'), $(this).width())
 					}
-				})(col))
-			}
-			_columns = v
-			this.calcImageWidth()
-			$('.box, .measure').trigger('mlayout')
-		},
-		rows: function(){
-			return _rows
-		},
-		setRows: function(v){
-			//not run if columns is not increased
-			for (let row = _rows; row < v; row++) {
-				for (let col = 0; col < _columns; col++) {
-					$('<div class="box"><img></div>')
-						.appendTo($('#printArea'))
-						.on('mlayout', boxLayoutFunction(col, row))
-						.on('dragenter', boxDragEnter)
-						.on('dragover', stopProp)
-						.on('dragleave', boxDragLeave)
-						.on('drop', boxDropFunction(col, row))
-						.find('img')
-							.attr('src', blobs[[col, row]] || placeholder)
-							.on('load', scaleImage)
 				}
-
-				if(row > 0){
-					addMeasure('#leftDiv', (function(mrow){
-						return function(){
-							if(mrow >= g.rows()){
-								$(this).remove()
-							}else{
-								$(this)
-									.css('top', g.printerMargin() + mrow * (g.imageHeight() + g.imageMargin()) - g.imageMargin() + 'mm')
-									.height(g.imageMargin() + 'mm')
-								setVerticalLines($(this).find('line'), $(this).height())
-							}
-						}
-					})(row))
+			})(col))
+		}
+		//new image box measure
+		addMeasure('#topDiv', 'imageWidthInp', g.imageWidth(), (function(mcol){
+			return function(){
+				if(mcol >= g.columns()){
+					$(this).remove()
+				}else{
+					$(this)
+						.css('left', g.printerMargin() + mcol * (g.imageWidth() + g.imageMargin()) + 'mm')
+						.width(g.imageWidth() + 'mm')
+					setHorizontalLines($(this).find('line'), $(this).width())
 				}
-				addMeasure('#leftDiv', (function(mrow){
-					return function(){
-						if(mrow >= g.rows()){
-							$(this).remove()
-						}else{
-							$(this)
-								.css('top', g.printerMargin() + mrow * (g.imageHeight() + g.imageMargin()) + 'mm')
-								.height(g.imageHeight() + 'mm')
-							setVerticalLines($(this).find('line'), $(this).height())
-						}
-					}
-				})(row))
 			}
-			_rows = v
-			this.calcImageHeight()
-			$('.box, .measure').trigger('mlayout')
-		},
-
-		printWidth: function(){
-			return _printWidth
-		},
-		printHeight: function(){
-			return _printHeight
-		},
-		imageWidth: function(){
-			return _imageWidth
-		},
-		imageHeight: function(){
-			return _imageHeight
-		},
+		})(col))
 	}
-}())
+})
 
+g.preRowsChange(function(prevRows, currRows){
+	for (let row = prevRows; row < currRows; row++) {
+		for (let col = 0; col < g.columns(); col++) {
+			$('<div class="box"><img></div>')
+				.appendTo($('#printArea'))
+				.on('mlayout', boxLayoutFunction(col, row))
+				.on('dragenter', boxDragEnter)
+				.on('dragover', stopProp)
+				.on('dragleave', boxDragLeave)
+				.on('drop', boxDropFunction(col, row))
+				.find('img')
+					.attr('src', blobs[[col, row]] || placeholder)
+					.on('load', scaleImage)
+		}
 
-addMeasure('#topDiv', function(){
+		if(row > 0){
+			addMeasure('#leftDiv', 'imageMarginInp', g.imageMargin(), (function(mrow){
+				return function(){
+					if(mrow >= g.rows()){
+						$(this).remove()
+					}else{
+						$(this)
+							.css('top', g.printerMargin() + mrow * (g.imageHeight() + g.imageMargin()) - g.imageMargin() + 'mm')
+							.height(g.imageMargin() + 'mm')
+						setVerticalLines($(this).find('line'), $(this).height())
+					}
+				}
+			})(row))
+		}
+		addMeasure('#leftDiv', 'imageHeightInp', g.imageHeight(), (function(mrow){
+			return function(){
+				if(mrow >= g.rows()){
+					$(this).remove()
+				}else{
+					$(this)
+						.css('top', g.printerMargin() + mrow * (g.imageHeight() + g.imageMargin()) + 'mm')
+						.height(g.imageHeight() + 'mm')
+					setVerticalLines($(this).find('line'), $(this).height())
+				}
+			}
+		})(row))
+	}
+})
+
+addMeasure('#topDiv', 'printerMarginInp', g.printerMargin(), function(){
 	$(this)
 		.css('left', 0)
 		.width(g.printerMargin() + 'mm')
 	setHorizontalLines($(this).find('line'), $(this).width())
 }, function(){
-	g.setPrinterMargin($(this).val())
+	g.printerMargin(Number($(this).val()))
 	$('.printerMarginInp').val(g.printerMargin())
 })
-addMeasure('#topDiv', function(){
+addMeasure('#topDiv', 'printerMarginInp', g.printerMargin(), function(){
 	$(this)
 		.css('right', 0)
 		.width(g.printerMargin() + 'mm')
 	setHorizontalLines($(this).find('line'), $(this).width())
 }, function(){
-	g.setPrinterMargin($(this).val())
+	g.printerMargin(Number($(this).val()))
 	$('.printerMarginInp').val(g.printerMargin())
 })
 
-addMeasure('#leftDiv', function(){
+addMeasure('#leftDiv', 'printerMarginInp', g.printerMargin(), function(){
 	$(this)
 		.css('top', 0)
 		.height(g.printerMargin() + 'mm')
 	setVerticalLines($(this).find('line'), $(this).height())
 }, function(){
-	g.setPrinterMargin($(this).val())
+	g.printerMargin(Number($(this).val()))
 	$('.printerMarginInp').val(g.printerMargin())
 })
-addMeasure('#leftDiv', function(){
+addMeasure('#leftDiv', 'printerMarginInp', g.printerMargin(), function(){
 	$(this)
 		.css('bottom', 0)
 		.height(g.printerMargin() + 'mm')
 	setVerticalLines($(this).find('line'), $(this).height())
 }, function(){
-	g.setPrinterMargin($(this).val())
+	g.printerMargin(Number($(this).val()))
 	$('.printerMarginInp').val(g.printerMargin())
 })
 
@@ -402,90 +300,21 @@ $('#printArea').on('mlayout', function(e){stopProp(e)
 	$('.box, .measure').trigger('mlayout')
 })
 
-for (let col = 0; col < g.columns(); col++) {
-	for (let row = 0; row < g.rows(); row++) {
-		$('<div class="box"><img></div>')
-			.appendTo($('#printArea'))
-			.on('mlayout', boxLayoutFunction(col, row))
-			.on('dragenter', boxDragEnter)
-			.on('dragover', stopProp)
-			.on('dragleave', boxDragLeave)
-			.on('drop', boxDropFunction(col, row))
-			.find('img')
-				.attr('src', blobs[[col, row]] || placeholder)
-				.on('load', scaleImage)
-	}
-}
-
-
-
-for (let col = 0; col < g.columns(); col++) {
-	if(col > 0){
-		addMeasure('#topDiv', (function(mcol){
-			return function(){
-				if(mcol >= g.columns()){
-					$(this).remove()
-				}else{
-					$(this)
-						.css('left', g.printerMargin() + mcol * (g.imageWidth() + g.imageMargin()) - g.imageMargin() + 'mm')
-						.width(g.imageMargin() + 'mm')
-					setHorizontalLines($(this).find('line'), $(this).width())
-				}
-			}
-		})(col))
-	}
-	addMeasure('#topDiv', (function(mcol){
-		return function(){
-			if(mcol >= g.columns()){
-				$(this).remove()
-			}else{
-				$(this)
-					.css('left', g.printerMargin() + mcol * (g.imageWidth() + g.imageMargin()) + 'mm')
-					.width(g.imageWidth() + 'mm')
-				setHorizontalLines($(this).find('line'), $(this).width())
-			}
-		}
-	})(col))
-}
-
-for (let row = 0; row < g.rows(); row++) {
-	if(row > 0){
-		addMeasure('#leftDiv', (function(mrow){
-			return function(){
-				if(mrow >= g.rows()){
-					$(this).remove()
-				}else{
-					$(this)
-						.css('top', g.printerMargin() + mrow * (g.imageHeight() + g.imageMargin()) - g.imageMargin() + 'mm')
-						.height(g.imageMargin() + 'mm')
-					setVerticalLines($(this).find('line'), $(this).height())
-				}
-			}
-		})(row))
-	}
-	addMeasure('#leftDiv', (function(mrow){
-		return function(){
-			if(mrow >= g.rows()){
-				$(this).remove()
-			}else{
-				$(this)
-					.css('top', g.printerMargin() + mrow * (g.imageHeight() + g.imageMargin()) + 'mm')
-					.height(g.imageHeight() + 'mm')
-				setVerticalLines($(this).find('line'), $(this).height())
-			}
-		}
-	})(row))
-}
+//g.on_printerMargin_changed(() => {console.log(g.printerMargin())})
 
 $('#mbutton').click(function(){
-	g.setPrinterMargin(g.printerMargin()+1)
+	g.rows(g.rows() + 1)
+	g.columns(g.columns() + 1)
 })
 
-
-
 $(document).ready(function(){
-	g.calcImageWidth()
-	g.calcImageHeight()
+	g.columns(3)
+	g.rows(4)
+	$('.printerMarginInp').first().val(g.printerMargin()).trigger('change')
+	// $('.imageMarginInp').first().val(g.imageMargin()).trigger('change')
+	// $('.imageWidthInp').first().val(g.imageWidth()).trigger('change')
+	// $('.imageWidthInp').first().val(g.imageWidth()).trigger('change')
+	// $('.imageHeightInp').first().val(g.imageHeight()).trigger('change')
 	$('#paper').trigger('mlayout')
 	$(window).trigger('resize')
 })
