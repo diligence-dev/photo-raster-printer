@@ -1,7 +1,7 @@
 module.exports = function(varObj) {
-	let pub = {}
+	const pub = {}
 
-	for (let iprop in varObj) {
+	for (const iprop in varObj) {
 		varObj[iprop + '_callbacks'] = []
 
 		;(function(prop) {
@@ -14,7 +14,7 @@ module.exports = function(varObj) {
 					return varObj[prop]
 				} else {
 					varObj[prop] = v
-					for (let ifunc of varObj[iprop + '_callbacks']) {
+					for (const ifunc of varObj[iprop + '_callbacks']) {
 						ifunc()
 					}
 				}

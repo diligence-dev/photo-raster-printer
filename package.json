@@ -7,17 +7,16 @@
     "test": "test"
   },
   "dependencies": {
-    "budo": "^9.4.7"
+    "jquery": "^3.2.0"
   },
   "devDependencies": {
     "browserify": "^14.1.0",
-    "budo": "^9.4.7",
-    "jquery": "^3.2.0"
+    "budo": "^9.4.7"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "browserify docs/index.js > docs/bundle.js",
-	"dev": "budo --dir docs/ --live --open docs/index.js:bundle.js"
+    "dev": "budo --dir docs/ --live --open docs/index.js:bundle.js"
   },
   "repository": {
     "type": "git",

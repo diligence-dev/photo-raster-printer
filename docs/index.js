@@ -12,8 +12,7 @@ function stopProp(e) {
 }
 
 function addMeasure(targetSelector, inputClass, inputValue, layoutFunc, inputFunc) {
-	// let inp = $('<input class="' + inputClass + '" type="number" value="' + inputValue + '">')
-	let inp = $('<input class="' + inputClass + '" type="number">')
+	const inp = $('<input class="' + inputClass + '" type="number">')
 		.change(function(){
 			$.proxy(inputFunc, $(this))()
 		})
@@ -63,7 +62,7 @@ function boxDropFunction(mcol, mrow) {
 	//saving col as mcol, otherwise col == g.columns() onDrop for each box
 	return function(e) {stopProp(e)
 		if (e.originalEvent.dataTransfer.files.length > 0) {
-			let mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
+			const mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
 			blobs[[mcol, mrow]] = mURL
 			$(this).find('img')
 				.attr('src', mURL)
@@ -74,8 +73,8 @@ function boxDropFunction(mcol, mrow) {
 }
 
 function scaleImage() {
-	let widthScale = $(this).parent().width() / $(this).prop('naturalWidth')
-	let heightScale = $(this).parent().height() / $(this).prop('naturalHeight')
+	const widthScale = $(this).parent().width() / $(this).prop('naturalWidth')
+	const heightScale = $(this).parent().height() / $(this).prop('naturalHeight')
 
 	if (widthScale > heightScale) {
 		$(this)
@@ -142,10 +141,10 @@ g.on_paperWidth_changed( () => { $('#paper').trigger('mlayout') })
 g.on_paperHeight_changed( () => { $('#paper').trigger('mlayout') })
 
 g.on_printerMargin_changed( () => { $('#printArea').trigger('mlayout') })
-g.on_imageMargin_changed( () => { $('.box, .measure').trigger('mlayout') })
-
-g.on_columns_changed( () => { $('.box, .measure').trigger('mlayout') })
-g.on_rows_changed( () => { $('.box, .measure').trigger('mlayout') })
+// g.on_imageMargin_changed( () => { $('.box, .measure').trigger('mlayout') })
+//
+// g.on_columns_changed( () => { $('.box, .measure').trigger('mlayout') })
+// g.on_rows_changed( () => { $('.box, .measure').trigger('mlayout') })
 
 g.preColumnsChange(function(prevColumns, currColumns){
 	for (let col = prevColumns; col < currColumns; col++) {
@@ -278,9 +277,9 @@ addMeasure('#leftDiv', 'printerMarginInp', g.printerMargin(), function(){
 
 $(window).on('resize', function(){
 	//center paper in body
-	let mleft = 0.5 * ($(window).width() - $('#paper').width())
+	const mleft = 0.5 * ($(window).width() - $('#paper').width())
 	$('#paper').css('left', Math.max(sideDivWidth + sideDivMargin, mleft))
-	let mtop = 0.5 * ($(window).height() - $('#paper').height())
+	const mtop = 0.5 * ($(window).height() - $('#paper').height())
 	$('#paper').css('top', Math.max(sideDivHeight + sideDivMargin, mtop))
 })
 
