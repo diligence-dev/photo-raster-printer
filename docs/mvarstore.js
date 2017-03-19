@@ -1,4 +1,4 @@
-module.exports = function(){
+module.exports = (function(){
 	const pub = require('./varstore.js')({
 		paperWidth: 210, //mm
 		paperHeight: 297, //mm
@@ -69,4 +69,4 @@ module.exports = function(){
 	pub.preRowsChange = (func) => {_preRowsChange = func}
 
 	return pub
-}
+})()
