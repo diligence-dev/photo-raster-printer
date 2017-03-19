@@ -62,7 +62,7 @@ $('#mbutton').click(function(){
 	g.columns(g.columns() - 1)
 })
 
-managerBoxesMeasures({topSide, leftSide, /*rightSide, bottomSide,*/ boxContainer: printArea, g})
+managerBoxesMeasures({$, topSide, leftSide, /*rightSide, bottomSide,*/ boxContainer: printArea, g})
 
 $(document).ready(function(){
 	g.rows(4)

@@ -1,13 +1,12 @@
-module.exports = function({topSide, leftSide, /*rightSide, bottomSide,*/ boxContainer, g}) {
+module.exports = function({$, topSide, leftSide, /*rightSide, bottomSide,*/ boxContainer, g}) {
 	const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
 
-	const $ = require('jquery')
+	//urls to blobs the user inserted
+	const blobs = {}
 	const boxesAndMeasures = []
 	function layoutBoxesAndMeasures(){
 		boxesAndMeasures.forEach( boxOrMeasure => { boxOrMeasure.trigger('mlayout') } )
 	}
-	//urls to blobs the user inserted
-	const blobs = {}
 
 	const boxProto = {
 		init: function(col, row){
@@ -140,24 +139,6 @@ module.exports = function({topSide, leftSide, /*rightSide, bottomSide,*/ boxCont
 		}
 	}
 
-	//add printer margin measures
-	Object.create(horizontalMeasureProto).configure({
-		inputClass: 'printerMarginInp',
-		onInputChanged: inputValue => {
-			g.printerMargin(inputValue)
-			$('.printerMarginInp').val(inputValue) },
-		getLeft: () => 0,
-		getWidth: () => g.printerMargin()
-	}).init(-1)
-	Object.create(horizontalMeasureProto).configure({
-		inputClass: 'printerMarginInp',
-		onInputChanged: inputValue => {
-			g.printerMargin(inputValue)
-			$('.printerMarginInp').val(inputValue) },
-		getLeft: () => g.paperWidth() - g.printerMargin(),
-		getWidth: () => g.printerMargin()
-	}).init(-1)
-
 	const horizontalImageMeasureProto = Object.create(horizontalMeasureProto).configure({
 		inputClass: 'imageWidthInp',
 		onInputChanged: inputValue => {
@@ -242,24 +223,6 @@ module.exports = function({topSide, leftSide, /*rightSide, bottomSide,*/ boxCont
 		}
 	}
 
-	//add printer margin measures
-	Object.create(verticalMeasureProto).configure({
-		inputClass: 'printerMarginInp',
-		onInputChanged: inputValue => {
-			g.printerMargin(inputValue)
-			$('.printerMarginInp').val(inputValue) },
-		getTop: () => 0,
-		getHeight: () => g.printerMargin()
-	}).init(-1)
-	Object.create(verticalMeasureProto).configure({
-		inputClass: 'printerMarginInp',
-		onInputChanged: inputValue => {
-			g.printerMargin(inputValue)
-			$('.printerMarginInp').val(inputValue) },
-		getTop: () => g.paperHeight() - g.printerMargin(),
-		getHeight: () => g.printerMargin()
-	}).init(-1)
-
 	const verticalImageMeasureProto = Object.create(verticalMeasureProto).configure({
 		inputClass: 'imageHeightInp',
 		onInputChanged: inputValue => {
@@ -289,6 +252,41 @@ module.exports = function({topSide, leftSide, /*rightSide, bottomSide,*/ boxCont
 	})
 	g.on_rows_changed(layoutBoxesAndMeasures)
 
+	//add printer margin measures
+	{
+		Object.create(horizontalMeasureProto).configure({
+			inputClass: 'printerMarginInp',
+			onInputChanged: inputValue => {
+				g.printerMargin(inputValue)
+				$('.printerMarginInp').val(inputValue) },
+			getLeft: () => 0,
+			getWidth: () => g.printerMargin()
+		}).init(-1)
+		Object.create(horizontalMeasureProto).configure({
+			inputClass: 'printerMarginInp',
+			onInputChanged: inputValue => {
+				g.printerMargin(inputValue)
+				$('.printerMarginInp').val(inputValue) },
+			getLeft: () => g.paperWidth() - g.printerMargin(),
+			getWidth: () => g.printerMargin()
+		}).init(-1)
+		Object.create(verticalMeasureProto).configure({
+			inputClass: 'printerMarginInp',
+			onInputChanged: inputValue => {
+				g.printerMargin(inputValue)
+				$('.printerMarginInp').val(inputValue) },
+			getTop: () => 0,
+			getHeight: () => g.printerMargin()
+		}).init(-1)
+		Object.create(verticalMeasureProto).configure({
+			inputClass: 'printerMarginInp',
+			onInputChanged: inputValue => {
+				g.printerMargin(inputValue)
+				$('.printerMarginInp').val(inputValue) },
+			getTop: () => g.paperHeight() - g.printerMargin(),
+			getHeight: () => g.printerMargin()
+		}).init(-1)
+	}
 
 	g.on_paperWidth_changed(layoutBoxesAndMeasures)
 	g.on_paperHeight_changed(layoutBoxesAndMeasures)
