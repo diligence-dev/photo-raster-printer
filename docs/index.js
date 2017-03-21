@@ -55,23 +55,15 @@ printArea.on('mlayout', function(e){
 		.height(g.printHeight() + 'mm')
 })
 
-//g.on_printerMargin_changed(() => {console.log(g.printerMargin())})
-
-$('#mbutton').click(function(){
-	g.rows(g.rows() - 1)
-	g.columns(g.columns() - 1)
-})
-
-managerBoxesMeasures({$, topSide, leftSide, /*rightSide, bottomSide,*/ boxContainer: printArea, g})
+managerBoxesMeasures({$, topSide, leftSide, rightSide, bottomSide, boxContainer: printArea, g})
 
 $(document).ready(function(){
 	g.rows(4)
 	g.columns(3)
 	$('.printerMarginInp').first().val(g.printerMargin()).trigger('change')
-	// $('.imageMarginInp').first().val(g.imageMargin()).trigger('change')
-	// $('.imageWidthInp').first().val(g.imageWidth()).trigger('change')
-	// $('.imageWidthInp').first().val(g.imageWidth()).trigger('change')
-	// $('.imageHeightInp').first().val(g.imageHeight()).trigger('change')
+	$('.imageMarginInp').first().val(g.imageMargin()).trigger('change')
 	g.paperWidth(g.paperWidth())
+	$('#bottomSide').find('input').val(g.paperWidth())
+	$('#rightSide').find('input').val(g.paperHeight())
 	$(window).trigger('resize')
 })

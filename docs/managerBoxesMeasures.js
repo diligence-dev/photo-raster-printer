@@ -1,4 +1,4 @@
-module.exports = function({$, topSide, leftSide, /*rightSide, bottomSide,*/ boxContainer, g}) {
+module.exports = function({$, topSide, leftSide, rightSide, bottomSide, boxContainer, g}) {
 	const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
 
 	//urls to blobs the user inserted
@@ -85,28 +85,32 @@ module.exports = function({$, topSide, leftSide, /*rightSide, bottomSide,*/ boxC
 	}
 
 	const horizontalMeasureProto = {
-		configure: function({inputClass, onInputChanged, getLeft, getWidth}){
+		configure: function({inputClass, controlledValue, getLeft, getWidth}){
 			this.inputClass = inputClass
-			this.onInputChanged = onInputChanged
+			this.controlledValue = controlledValue
 			this.getLeft = getLeft
 			this.getWidth = getWidth
 			return this
 		},
-		init: function(col){
+		init: function(col, parent = topSide){
 			this.col = col
 			this.div = $('<div class="measure screenAbsolute"><svg><g stroke-width="2px" stroke="black"><line/><line/><line/></g></svg></div>')
 
-			const input = $('<input class="' + this.inputClass + '" type="number">')
-			input
-				.change( () => { this.onInputChanged(Number( input.val() )) })
-				.appendTo(this.div)
+			if(typeof this.controlledValue === 'function'){
+				const input = $('<input class="' + this.inputClass + '" type="number">')
+				input
+				.change( () => {
+					this.controlledValue(Number( input.val() ))
+					$('.' + this.inputClass).val(this.controlledValue()) })
+					.appendTo(this.div)
+			}
 
 			this.lines = this.div.find('line')
 			this.setupLines(this.lines)
 
 			this.div
 				.on('mlayout', this.layout.bind(this))
-				.appendTo(topSide)
+				.appendTo(parent)
 			boxesAndMeasures.push(this.div)
 		},
 		setupLines: function(lines) {
@@ -140,16 +144,12 @@ module.exports = function({$, topSide, leftSide, /*rightSide, bottomSide,*/ boxC
 	}
 
 	const horizontalImageMeasureProto = Object.create(horizontalMeasureProto).configure({
-		inputClass: 'imageWidthInp',
-		onInputChanged: inputValue => {
-			console.log('todo: imageWidthInp changes imageWidth')
-			g.imageMargin(inputValue) },
 		getLeft: mcol => g.printerMargin() + mcol * (g.imageWidth() + g.imageMargin()),
 		getWidth: () => g.imageWidth()
 	})
 	const horizontalMarginMeasureProto = Object.create(horizontalMeasureProto).configure({
 		inputClass: 'imageMarginInp',
-		onInputChanged: inputValue => {	g.imageMargin(inputValue) },
+		controlledValue: g.imageMargin,
 		getLeft: mcol => g.printerMargin() + mcol * (g.imageWidth() + g.imageMargin()) - g.imageMargin(),
 		getWidth: () => g.imageMargin()
 	})
@@ -169,28 +169,33 @@ module.exports = function({$, topSide, leftSide, /*rightSide, bottomSide,*/ boxC
 	g.on_columns_changed(layoutBoxesAndMeasures)
 
 	const verticalMeasureProto = {
-		configure: function({inputClass, onInputChanged, getTop, getHeight}){
+		configure: function({inputClass, controlledValue, getTop, getHeight}){
+
 			this.inputClass = inputClass
-			this.onInputChanged = onInputChanged
+			this.controlledValue = controlledValue
 			this.getTop = getTop
 			this.getHeight = getHeight
 			return this
 		},
-		init: function(row){
+		init: function(row, parent = leftSide){
 			this.row = row
 			this.div = $('<div class="measure screenAbsolute"><svg><g stroke-width="2px" stroke="black"><line/><line/><line/></g></svg></div>')
 
-			const input = $('<input class="' + this.inputClass + '" type="number">')
-			input
-				.change( () => { this.onInputChanged(Number( input.val() )) })
-				.appendTo(this.div)
+			if(typeof this.controlledValue === 'function'){
+				const input = $('<input class="' + this.inputClass + '" type="number">')
+				input
+				.change( () => {
+					this.controlledValue(Number( input.val() ))
+					$('.' + this.inputClass).val(this.controlledValue()) })
+					.appendTo(this.div)
+			}
 
 			this.lines = this.div.find('line')
 			this.setupLines(this.lines)
 
 			this.div
 				.on('mlayout', this.layout.bind(this))
-				.appendTo(leftSide)
+				.appendTo(parent)
 			boxesAndMeasures.push(this.div)
 		},
 		setupLines: function(lines) {
@@ -224,16 +229,12 @@ module.exports = function({$, topSide, leftSide, /*rightSide, bottomSide,*/ boxC
 	}
 
 	const verticalImageMeasureProto = Object.create(verticalMeasureProto).configure({
-		inputClass: 'imageHeightInp',
-		onInputChanged: inputValue => {
-			console.log('todo: imageHeightInp changes imageHeight')
-			g.imageMargin(inputValue) },
 		getTop: mrow => g.printerMargin() + mrow * (g.imageHeight() + g.imageMargin()),
 		getHeight: () => g.imageHeight()
 	})
 	const verticalMarginMeasureProto = Object.create(verticalMeasureProto).configure({
 		inputClass: 'imageMarginInp',
-		onInputChanged: inputValue => { g.imageMargin(inputValue) },
+		controlledValue: g.imageMargin,
 		getTop: mrow => g.printerMargin() + mrow * (g.imageHeight() + g.imageMargin()) - g.imageMargin(),
 		getHeight: () => g.imageMargin()
 	})
@@ -256,36 +257,44 @@ module.exports = function({$, topSide, leftSide, /*rightSide, bottomSide,*/ boxC
 	{
 		Object.create(horizontalMeasureProto).configure({
 			inputClass: 'printerMarginInp',
-			onInputChanged: inputValue => {
-				g.printerMargin(inputValue)
-				$('.printerMarginInp').val(inputValue) },
+			controlledValue: g.printerMargin,
 			getLeft: () => 0,
 			getWidth: () => g.printerMargin()
 		}).init(-1)
 		Object.create(horizontalMeasureProto).configure({
 			inputClass: 'printerMarginInp',
-			onInputChanged: inputValue => {
-				g.printerMargin(inputValue)
-				$('.printerMarginInp').val(inputValue) },
+			controlledValue: g.printerMargin,
 			getLeft: () => g.paperWidth() - g.printerMargin(),
 			getWidth: () => g.printerMargin()
 		}).init(-1)
 		Object.create(verticalMeasureProto).configure({
 			inputClass: 'printerMarginInp',
-			onInputChanged: inputValue => {
-				g.printerMargin(inputValue)
-				$('.printerMarginInp').val(inputValue) },
+			controlledValue: g.printerMargin,
 			getTop: () => 0,
 			getHeight: () => g.printerMargin()
 		}).init(-1)
 		Object.create(verticalMeasureProto).configure({
 			inputClass: 'printerMarginInp',
-			onInputChanged: inputValue => {
-				g.printerMargin(inputValue)
-				$('.printerMarginInp').val(inputValue) },
+			controlledValue: g.printerMargin,
 			getTop: () => g.paperHeight() - g.printerMargin(),
 			getHeight: () => g.printerMargin()
 		}).init(-1)
+	}
+
+	//add page measures
+	{
+		Object.create(horizontalMeasureProto).configure({
+			inputClass: 'paperWidthInp',
+			controlledValue: g.paperWidth,
+			getLeft: () => 0,
+			getWidth: () => g.paperWidth()
+		}).init(-1, bottomSide)
+		Object.create(verticalMeasureProto).configure({
+			inputClass: 'paperHeightInp',
+			controlledValue: g.paperHeight,
+			getTop: () => 0,
+			getHeight: () => g.paperHeight()
+		}).init(-1, rightSide)
 	}
 
 	g.on_paperWidth_changed(layoutBoxesAndMeasures)
