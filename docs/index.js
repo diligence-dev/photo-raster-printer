@@ -55,7 +55,13 @@ printArea.on('mlayout', function(e){
 		.height(g.printHeight() + 'mm')
 })
 
+$('#plusColumn').on('click', () => { g.columns(g.columns() + 1) })
+$('#minusColumn').on('click', () => { g.columns(g.columns() - 1) })
+$('#plusRow').on('click', () => { g.rows(g.rows() + 1) })
+$('#minusRow').on('click', () => { g.rows(g.rows() - 1) })
+
 managerBoxesMeasures({$, topSide, leftSide, rightSide, bottomSide, boxContainer: printArea, g})
+
 
 $(document).ready(function(){
 	g.rows(4)

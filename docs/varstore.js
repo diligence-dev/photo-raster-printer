@@ -10,7 +10,7 @@ module.exports = function(varObj) {
 			}
 
 			pub[prop] = function(v) {
-				if (typeof v == 'undefined') {
+				if (typeof v === 'undefined') {
 					return varObj[prop]
 				} else {
 					varObj[prop] = v

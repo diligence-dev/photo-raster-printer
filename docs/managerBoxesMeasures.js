@@ -295,6 +295,7 @@ module.exports = function({$, topSide, leftSide, rightSide, bottomSide, boxConta
 			getTop: () => 0,
 			getHeight: () => g.paperHeight()
 		}).init(-1, rightSide)
+		//these are flipped by css to have lines at the paper and input outside
 	}
 
 	g.on_paperWidth_changed(layoutBoxesAndMeasures)

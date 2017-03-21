@@ -47,7 +47,7 @@ module.exports = (function(){
 	let _preColumnsChange
 	const _columnsFunc = pub.columns
 	pub.columns = function(v) {
-		if(typeof v == 'undefined'){
+		if(typeof v === 'undefined'){
 			return _columnsFunc()
 		}else{
 			_preColumnsChange(pub.columns(), v)
@@ -59,7 +59,7 @@ module.exports = (function(){
 	let _preRowsChange
 	const _rowsFunc = pub.rows
 	pub.rows = function(v) {
-		if(typeof v == 'undefined'){
+		if(typeof v === 'undefined'){
 			return _rowsFunc()
 		}else{
 			_preRowsChange(pub.rows(), v)
