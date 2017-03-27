@@ -99,9 +99,10 @@ module.exports = function({$, topSide, leftSide, rightSide, bottomSide, boxConta
 			if(typeof this.controlledValue === 'function'){
 				const input = $('<input class="' + this.inputClass + '" type="number">')
 				input
-				.change( () => {
-					this.controlledValue(Number( input.val() ))
-					$('.' + this.inputClass).val(this.controlledValue()) })
+					.val(this.controlledValue())
+					.change( () => {
+						this.controlledValue(Number( input.val() ))
+						$('.' + this.inputClass).val(this.controlledValue()) })
 					.appendTo(this.div)
 			}
 
@@ -184,9 +185,10 @@ module.exports = function({$, topSide, leftSide, rightSide, bottomSide, boxConta
 			if(typeof this.controlledValue === 'function'){
 				const input = $('<input class="' + this.inputClass + '" type="number">')
 				input
-				.change( () => {
-					this.controlledValue(Number( input.val() ))
-					$('.' + this.inputClass).val(this.controlledValue()) })
+					.val(this.controlledValue())
+					.change( () => {
+						this.controlledValue(Number( input.val() ))
+						$('.' + this.inputClass).val(this.controlledValue()) })
 					.appendTo(this.div)
 			}
 

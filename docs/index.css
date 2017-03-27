@@ -2,9 +2,6 @@ body {
 	margin: 0;
 	padding: 0;
 }
-/*#printArea {
-	box-shadow: inset 0 0 0 1000px #555;
-}*/
 .box {
 	position: absolute;
 	overflow: hidden;
@@ -15,10 +12,13 @@ body {
 		background-color: #473;
 	}
 	#paper {
-		background-color: #ddd;
+		background-color: #eee;
 	}
 	#paper, #printArea {
 		border: solid;
+	}
+	input {
+		z-index: 1;
 	}
 	.screenAbsolute {
 		position: absolute;
@@ -71,21 +71,24 @@ body {
 		position: absolute;
 		bottom: 0;
 		z-index: 1;
+		transform: rotateZ(90deg);
 	}
 	#minusRow {
 		position: absolute;
-		bottom: 50px;
+		bottom: 70px;
 		z-index: 1;
 	}
 	#plusColumn {
 		position: absolute;
 		right: 0;
+		top: -28px;
 		z-index: 1;
 	}
 	#minusColumn {
 		position: absolute;
-		right: 50px;
+		right: 70px;
 		z-index: 1;
+		top: -28px;
 	}
 }
 
