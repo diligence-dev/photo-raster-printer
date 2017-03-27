@@ -1,6 +1,6 @@
 {
   "name": "image-grid-printer",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "a free browser utility for creating image grids to print directly or save as pdf",
   "main": "index.js",
   "directories": {
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "image-grid-printer@code.hpi.uni-potsdam.de:image-grid-printer.git"
+    "url": "git@github.com:paxinice/image-grid-printer.git"
   },
   "author": "Pascal Führlich",
   "license": "Apache-2.0"
