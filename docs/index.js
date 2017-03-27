@@ -56,9 +56,9 @@ printArea.on('mlayout', function(e){
 })
 
 $('#plusColumn').on('click', () => { g.columns(g.columns() + 1) })
-$('#minusColumn').on('click', () => { g.columns(g.columns() - 1) })
+$('#minusColumn').on('click', () => { g.columns(Math.max(1, g.columns() - 1)) })
 $('#plusRow').on('click', () => { g.rows(g.rows() + 1) })
-$('#minusRow').on('click', () => { g.rows(g.rows() - 1) })
+$('#minusRow').on('click', () => { g.rows(Math.max(1, g.rows() - 1)) })
 
 managerBoxesMeasures({$, topSide, leftSide, rightSide, bottomSide, boxContainer: printArea, g})
 

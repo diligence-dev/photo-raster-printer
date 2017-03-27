@@ -97,7 +97,7 @@ module.exports = function({$, topSide, leftSide, rightSide, bottomSide, boxConta
 			this.div = $('<div class="measure screenAbsolute"><svg><g stroke-width="2px" stroke="black"><line/><line/><line/></g></svg></div>')
 
 			if(typeof this.controlledValue === 'function'){
-				const input = $('<input class="' + this.inputClass + '" type="number">')
+				const input = $('<input class="' + this.inputClass + '" type="number" min="0">')
 				input
 					.val(this.controlledValue())
 					.change( () => {
@@ -183,7 +183,7 @@ module.exports = function({$, topSide, leftSide, rightSide, bottomSide, boxConta
 			this.div = $('<div class="measure screenAbsolute"><svg><g stroke-width="2px" stroke="black"><line/><line/><line/></g></svg></div>')
 
 			if(typeof this.controlledValue === 'function'){
-				const input = $('<input class="' + this.inputClass + '" type="number">')
+				const input = $('<input class="' + this.inputClass + '" type="number" min="0">')
 				input
 					.val(this.controlledValue())
 					.change( () => {

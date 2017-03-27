@@ -59,12 +59,14 @@ body {
 		transform: scaleX(-1);
 	}
 	#rightSide input {
+		width: 50px;
 		transform: scaleX(-1);
 	}
 	#bottomSide {
 		transform: scaleY(-1);
 	}
 	#bottomSide input {
+		width: 50px;
 		transform: scaleY(-1);
 	}
 	#plusRow {
