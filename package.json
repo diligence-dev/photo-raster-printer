@@ -2,20 +2,20 @@
   "name": "image-grid-printer",
   "version": "1.0.0",
   "description": "a free browser utility for creating image grids to print directly or save as pdf",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
+  "main": "js/main.js",
   "dependencies": {
     "jquery": "^3.2.0"
   },
   "devDependencies": {
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-env": "^1.2.2",
     "webpack": "^2.3.2"
   },
   "scripts": {
-    "start": "budo --dir docs/ --live --open docs/index.js:bundle.js",
-    "build": "webpack docs/index.js docs/bundle.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "",
+    "build": "webpack -d --config webpack.config.js",
+    "prod": "webpack -p --config webpack.config.js"
   },
   "repository": {
     "type": "git",
