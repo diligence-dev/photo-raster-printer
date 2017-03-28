@@ -1,7 +1,10 @@
+const path = require('path')
+
 module.exports =  {
 	entry: './js/main.js',
 	output: {
-		filename: './docs/bundle.js'
+		path: path.join(__dirname, 'docs'),
+		filename: 'bundle.js'
 	},
 	module: {
 		rules: [
@@ -16,5 +19,9 @@ module.exports =  {
 				}
 			}
 		]
+	},
+	devServer: {
+		contentBase: 'docs',
+		stats: 'errors-only',
 	}
 }
