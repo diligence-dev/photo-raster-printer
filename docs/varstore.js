@@ -1,4 +1,4 @@
-module.exports = function(varObj) {
+export default function(varObj) {
 	const pub = {}
 
 	for (const iprop in varObj) {

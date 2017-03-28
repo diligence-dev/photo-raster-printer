@@ -10,13 +10,12 @@
     "jquery": "^3.2.0"
   },
   "devDependencies": {
-    "browserify": "^14.1.0",
-    "budo": "^9.4.7"
+    "webpack": "^2.3.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "browserify docs/index.js > docs/bundle.js",
-    "server": "budo --dir docs/ --live --open docs/index.js:bundle.js"
+    "start": "budo --dir docs/ --live --open docs/index.js:bundle.js",
+    "build": "webpack docs/index.js docs/bundle.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",

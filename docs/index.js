@@ -1,6 +1,6 @@
-const $ = require('jquery')
-const g = require('./mvarstore.js')
-const managerBoxesMeasures = require('./managerBoxesMeasures.js')
+import $ from 'jquery'
+import g from './mvarstore.js'
+import managerBoxesMeasures from './managerBoxesMeasures.js'
 
 const sideDivWidth = 80 //px
 const sideDivHeight = 50 //px

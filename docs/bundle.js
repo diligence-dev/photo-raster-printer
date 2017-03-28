@@ -1,82 +1,77 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-const $ = require('jquery')
-const g = require('./mvarstore.js')
-const managerBoxesMeasures = require('./managerBoxesMeasures.js')
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+/******/
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-const sideDivWidth = 80 //px
-const sideDivHeight = 50 //px
-const sideDivMargin = 10 //px
-
-const paper = $('#paper')
-const printArea = $('#printArea')
-
-const topSide = $('#topSide')
-const leftSide = $('#leftSide')
-const rightSide = $('#rightSide')
-const bottomSide = $('#bottomSide')
-
-topSide.height(sideDivHeight).width('100%').css('top', -sideDivHeight - sideDivMargin)
-leftSide.width(sideDivWidth).height('100%').css('left', -sideDivWidth - sideDivMargin)
-
-rightSide.width(sideDivWidth).height('100%').css('right', -sideDivWidth - sideDivMargin)
-bottomSide.height(sideDivHeight).width('100%').css('bottom', -sideDivHeight - sideDivMargin)
-
-g.on_paperWidth_changed( () => {
-	paper.trigger('mlayout')
-	printArea.trigger('mlayout')})
-g.on_paperHeight_changed( () => {
-	paper.trigger('mlayout')
-	printArea.trigger('mlayout')})
-
-g.on_printerMargin_changed( () => { printArea.trigger('mlayout') })
-
-$(window).on('resize', function(){
-	//center paper in body
-	const mleft = 0.5 * ($(window).width() - paper.width())
-	paper.css('left', Math.max(sideDivWidth + sideDivMargin, mleft))
-	const mtop = 0.5 * ($(window).height() - paper.height())
-	paper.css('top', Math.max(sideDivHeight + sideDivMargin, mtop))
-})
-
-paper.on('mlayout', function(e){
-	e.stopPropagation()
-	e.preventDefault()
-	$(this)
-		.width(g.paperWidth() + 'mm')
-		.height(g.paperHeight() + 'mm')
-})
-
-printArea.on('mlayout', function(e){
-	e.stopPropagation()
-	e.preventDefault()
-	$(this)
-		.css('left', g.printerMargin() + 'mm')
-		.css('top', g.printerMargin() + 'mm')
-		.width(g.printWidth() + 'mm')
-		.height(g.printHeight() + 'mm')
-})
-
-$('#plusColumn').on('click', () => { g.columns(g.columns() + 1) })
-$('#minusColumn').on('click', () => { g.columns(Math.max(1, g.columns() - 1)) })
-$('#plusRow').on('click', () => { g.rows(g.rows() + 1) })
-$('#minusRow').on('click', () => { g.rows(Math.max(1, g.rows() - 1)) })
-
-managerBoxesMeasures({$, topSide, leftSide, rightSide, bottomSide, boxContainer: printArea, g})
-
-
-$(document).ready(function(){
-	g.rows(4)
-	g.columns(3)
-	$('.printerMarginInp').first().val(g.printerMargin()).trigger('change')
-	$('.imageMarginInp').first().val(g.imageMargin()).trigger('change')
-	g.paperWidth(g.paperWidth())
-	$('#bottomSide').find('input').val(g.paperWidth())
-	$('#rightSide').find('input').val(g.paperHeight())
-	$(window).trigger('resize')
-})
-
-},{"./managerBoxesMeasures.js":2,"./mvarstore.js":3,"jquery":5}],2:[function(require,module,exports){
-module.exports = function({$, topSide, leftSide, rightSide, bottomSide, boxContainer, g}) {
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function({$, topSide, leftSide, rightSide, bottomSide, boxContainer, g}) {
 	const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
 
 	//urls to blobs the user inserted
@@ -383,112 +378,94 @@ module.exports = function({$, topSide, leftSide, rightSide, bottomSide, boxConta
 
 	g.on_printerMargin_changed(layoutBoxesAndMeasures)
 	g.on_imageMargin_changed(layoutBoxesAndMeasures)
+});
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__varstore_js__ = __webpack_require__(4);
+
+
+const pub = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__varstore_js__["a" /* default */])({
+	paperWidth: 210, //mm
+	paperHeight: 297, //mm
+
+	printerMargin: 10, //mm
+	imageMargin: 5, //mm
+
+	columns: 0,
+	rows: 0
+})
+
+//calculated
+let _printWidth = 0 //mm
+let _printHeight = 0 //mm
+
+let _imageWidth = 0 //mm
+let _imageHeight = 0 //mm
+
+function calcImageWidth(){
+	_printWidth = pub.paperWidth() - 2 * pub.printerMargin()
+	_imageWidth = (_printWidth - (pub.columns() - 1) * pub.imageMargin()) / pub.columns()
+}
+function calcImageHeight(){
+	_printHeight = pub.paperHeight() - 2 * pub.printerMargin()
+	_imageHeight = (_printHeight - (pub.rows() - 1) * pub.imageMargin()) / pub.rows()
+}
+function calcImageWidthHeight(){
+	calcImageWidth()
+	calcImageHeight()
 }
 
-},{}],3:[function(require,module,exports){
-module.exports = (function(){
-	const pub = require('./varstore.js')({
-		paperWidth: 210, //mm
-		paperHeight: 297, //mm
+pub.on_paperWidth_changed(calcImageWidth)
+pub.on_paperHeight_changed(calcImageHeight)
 
-		printerMargin: 10, //mm
-		imageMargin: 5, //mm
+pub.on_printerMargin_changed(calcImageWidthHeight)
+pub.on_imageMargin_changed(calcImageWidthHeight)
 
-		columns: 0,
-		rows: 0
-	})
+pub.on_columns_changed(calcImageWidth)
+pub.on_rows_changed(calcImageHeight)
 
-	//calculated
-	let _printWidth = 0 //mm
-	let _printHeight = 0 //mm
+pub.printWidth = () => _printWidth
+pub.printHeight = () => _printHeight
+pub.imageWidth = () => _imageWidth
+pub.imageHeight = () => _imageHeight
 
-	let _imageWidth = 0 //mm
-	let _imageHeight = 0 //mm
-
-	function calcImageWidth(){
-		_printWidth = pub.paperWidth() - 2 * pub.printerMargin()
-		_imageWidth = (_printWidth - (pub.columns() - 1) * pub.imageMargin()) / pub.columns()
+let _preColumnsChange
+const _columnsFunc = pub.columns
+pub.columns = function(v) {
+	if(typeof v === 'undefined'){
+		return _columnsFunc()
+	}else{
+		_preColumnsChange(pub.columns(), v)
+		_columnsFunc(v)
 	}
-	function calcImageHeight(){
-		_printHeight = pub.paperHeight() - 2 * pub.printerMargin()
-		_imageHeight = (_printHeight - (pub.rows() - 1) * pub.imageMargin()) / pub.rows()
-	}
-	function calcImageWidthHeight(){
-		calcImageWidth()
-		calcImageHeight()
-	}
-
-	pub.on_paperWidth_changed(calcImageWidth)
-	pub.on_paperHeight_changed(calcImageHeight)
-
-	pub.on_printerMargin_changed(calcImageWidthHeight)
-	pub.on_imageMargin_changed(calcImageWidthHeight)
-
-	pub.on_columns_changed(calcImageWidth)
-	pub.on_rows_changed(calcImageHeight)
-
-	pub.printWidth = () => _printWidth
-	pub.printHeight = () => _printHeight
-	pub.imageWidth = () => _imageWidth
-	pub.imageHeight = () => _imageHeight
-
-	let _preColumnsChange
-	const _columnsFunc = pub.columns
-	pub.columns = function(v) {
-		if(typeof v === 'undefined'){
-			return _columnsFunc()
-		}else{
-			_preColumnsChange(pub.columns(), v)
-			_columnsFunc(v)
-		}
-	}
-	pub.preColumnsChange = (func) => {_preColumnsChange = func}
-
-	let _preRowsChange
-	const _rowsFunc = pub.rows
-	pub.rows = function(v) {
-		if(typeof v === 'undefined'){
-			return _rowsFunc()
-		}else{
-			_preRowsChange(pub.rows(), v)
-			_rowsFunc(v)
-		}
-	}
-	pub.preRowsChange = (func) => {_preRowsChange = func}
-
-	return pub
-})()
-
-},{"./varstore.js":4}],4:[function(require,module,exports){
-module.exports = function(varObj) {
-	const pub = {}
-
-	for (const iprop in varObj) {
-		varObj[iprop + '_callbacks'] = []
-
-		;(function(prop) {
-			pub['on_' + prop + '_changed'] = function(func) {
-				varObj[iprop + '_callbacks'].push(func)
-			}
-
-			pub[prop] = function(v) {
-				if (typeof v === 'undefined') {
-					return varObj[prop]
-				} else {
-					varObj[prop] = v
-					for (const ifunc of varObj[iprop + '_callbacks']) {
-						ifunc()
-					}
-				}
-			}
-		})(iprop)
-	}
-
-	return pub
 }
+pub.preColumnsChange = (func) => {_preColumnsChange = func}
 
-},{}],5:[function(require,module,exports){
-/*!
+let _preRowsChange
+const _rowsFunc = pub.rows
+pub.rows = function(v) {
+	if(typeof v === 'undefined'){
+		return _rowsFunc()
+	}else{
+		_preRowsChange(pub.rows(), v)
+		_rowsFunc(v)
+	}
+}
+pub.preRowsChange = (func) => {_preRowsChange = func}
+
+/* harmony default export */ __webpack_exports__["a"] = (pub);
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
  * jQuery JavaScript Library v3.2.0
  * https://jquery.com/
  *
@@ -10691,10 +10668,11 @@ jQuery.nodeName = nodeName;
 // AMD loader is present. jQuery is a special case. For more information, see
 // https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
 
-if ( typeof define === "function" && define.amd ) {
-	define( "jquery", [], function() {
+if ( true ) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
 		return jQuery;
-	} );
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 }
 
 
@@ -10733,4 +10711,126 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
-},{}]},{},[1]);
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mvarstore_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__managerBoxesMeasures_js__ = __webpack_require__(0);
+
+
+
+
+const sideDivWidth = 80 //px
+const sideDivHeight = 50 //px
+const sideDivMargin = 10 //px
+
+const paper = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#paper')
+const printArea = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#printArea')
+
+const topSide = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#topSide')
+const leftSide = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#leftSide')
+const rightSide = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#rightSide')
+const bottomSide = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#bottomSide')
+
+topSide.height(sideDivHeight).width('100%').css('top', -sideDivHeight - sideDivMargin)
+leftSide.width(sideDivWidth).height('100%').css('left', -sideDivWidth - sideDivMargin)
+
+rightSide.width(sideDivWidth).height('100%').css('right', -sideDivWidth - sideDivMargin)
+bottomSide.height(sideDivHeight).width('100%').css('bottom', -sideDivHeight - sideDivMargin)
+
+__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].on_paperWidth_changed( () => {
+	paper.trigger('mlayout')
+	printArea.trigger('mlayout')})
+__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].on_paperHeight_changed( () => {
+	paper.trigger('mlayout')
+	printArea.trigger('mlayout')})
+
+__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].on_printerMargin_changed( () => { printArea.trigger('mlayout') })
+
+__WEBPACK_IMPORTED_MODULE_0_jquery___default()(window).on('resize', function(){
+	//center paper in body
+	const mleft = 0.5 * (__WEBPACK_IMPORTED_MODULE_0_jquery___default()(window).width() - paper.width())
+	paper.css('left', Math.max(sideDivWidth + sideDivMargin, mleft))
+	const mtop = 0.5 * (__WEBPACK_IMPORTED_MODULE_0_jquery___default()(window).height() - paper.height())
+	paper.css('top', Math.max(sideDivHeight + sideDivMargin, mtop))
+})
+
+paper.on('mlayout', function(e){
+	e.stopPropagation()
+	e.preventDefault()
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()(this)
+		.width(__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].paperWidth() + 'mm')
+		.height(__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].paperHeight() + 'mm')
+})
+
+printArea.on('mlayout', function(e){
+	e.stopPropagation()
+	e.preventDefault()
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()(this)
+		.css('left', __WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].printerMargin() + 'mm')
+		.css('top', __WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].printerMargin() + 'mm')
+		.width(__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].printWidth() + 'mm')
+		.height(__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].printHeight() + 'mm')
+})
+
+__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#plusColumn').on('click', () => { __WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].columns(__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].columns() + 1) })
+__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#minusColumn').on('click', () => { __WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].columns(Math.max(1, __WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].columns() - 1)) })
+__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#plusRow').on('click', () => { __WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].rows(__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].rows() + 1) })
+__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#minusRow').on('click', () => { __WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].rows(Math.max(1, __WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].rows() - 1)) })
+
+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__managerBoxesMeasures_js__["a" /* default */])({$: __WEBPACK_IMPORTED_MODULE_0_jquery___default.a, topSide, leftSide, rightSide, bottomSide, boxContainer: printArea, g: __WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */]})
+
+
+__WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(function(){
+	__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].rows(4)
+	__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].columns(3)
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('.printerMarginInp').first().val(__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].printerMargin()).trigger('change')
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('.imageMarginInp').first().val(__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].imageMargin()).trigger('change')
+	__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].paperWidth(__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].paperWidth())
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#bottomSide').find('input').val(__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].paperWidth())
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#rightSide').find('input').val(__WEBPACK_IMPORTED_MODULE_1__mvarstore_js__["a" /* default */].paperHeight())
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()(window).trigger('resize')
+})
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function(varObj) {
+	const pub = {}
+
+	for (const iprop in varObj) {
+		varObj[iprop + '_callbacks'] = []
+
+		;(function(prop) {
+			pub['on_' + prop + '_changed'] = function(func) {
+				varObj[iprop + '_callbacks'].push(func)
+			}
+
+			pub[prop] = function(v) {
+				if (typeof v === 'undefined') {
+					return varObj[prop]
+				} else {
+					varObj[prop] = v
+					for (const ifunc of varObj[iprop + '_callbacks']) {
+						ifunc()
+					}
+				}
+			}
+		})(iprop)
+	}
+
+	return pub
+});
+
+
+/***/ })
+/******/ ]);

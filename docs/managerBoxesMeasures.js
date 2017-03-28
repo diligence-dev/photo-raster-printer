@@ -1,4 +1,4 @@
-module.exports = function({$, topSide, leftSide, rightSide, bottomSide, boxContainer, g}) {
+export default function({$, topSide, leftSide, rightSide, bottomSide, boxContainer, g}) {
 	const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABHNCSVQICAgIfAhkiAAAAA1JREFUCJlj+D/T+D8ABzECy352aNAAAAAASUVORK5CYII='
 
 	//urls to blobs the user inserted
