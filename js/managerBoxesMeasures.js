@@ -75,6 +75,7 @@ export default function({$, topSide, leftSide, rightSide, bottomSide, boxContain
 					.height(heightScale * this.img.prop('naturalHeight'))
 					.removeClass('portrait')
 			}
+			this.img.css('top', 0).css('left', 0)
 		},
 		layout: function(e){
 			stopProp(e)
