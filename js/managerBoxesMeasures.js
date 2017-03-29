@@ -68,14 +68,12 @@ export default function({$, topSide, leftSide, rightSide, bottomSide, boxContain
 				this.img
 					.width(widthScale * this.img.prop('naturalWidth'))
 					.height(widthScale * this.img.prop('naturalHeight'))
-					.css('top', -0.5 * (this.img.height() - this.div.height()))
 					.addClass('portrait')
 			} else {
 				this.img
 					.width(heightScale * this.img.prop('naturalWidth'))
 					.height(heightScale * this.img.prop('naturalHeight'))
-					.css('left', -0.5 * (this.img.width() - this.div.width()))
-					// .addClass('landscape')
+					.removeClass('portrait')
 			}
 		},
 		layout: function(e){
@@ -104,7 +102,7 @@ export default function({$, topSide, leftSide, rightSide, bottomSide, boxContain
 				const startY = e.originalEvent.dataTransfer.getData('startY')
 				const diffY = e.originalEvent.clientY - Number(startY)
 				img.css('top', '+=' + diffY)
-			}else{ //if(img.hasClass('landscape')){
+			}else{
 				const startX = e.originalEvent.dataTransfer.getData('startX')
 				const diffX = e.originalEvent.clientX - Number(startX)
 				img.css('left', '+=' + diffX)
