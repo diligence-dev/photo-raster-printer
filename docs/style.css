@@ -7,6 +7,10 @@ body {
 	overflow: hidden;
 }
 
+.box img {
+	position: absolute;
+}
+
 @media screen {
 	body {
 		background-color: #473;

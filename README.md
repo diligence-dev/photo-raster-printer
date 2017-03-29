@@ -20,10 +20,11 @@ Each printer can a only print to a specific area of a paper, leaving a margin al
 
 Drag and drop image files (jpg or png) onto the orange boxes to insert them. The images will be scaled to fit the box. After scaling, the image will fill up the entire box and either width or height of your image will fit exactly, while the other one will be clipped.
 
+To move an image around in its box just drag and drop it.
+
 Finally use your browsers print option to save as pdf or print on paper. To save as pdf select a pdf-printer instead of an actual printer. On some operating systems (like windows 8 and older) you might need to install a pdf-printer first.
 
 ## upcoming
-- move image in it's box
 - menu bar
 
 ## license

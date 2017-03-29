@@ -8,13 +8,18 @@ export default function({$, topSide, leftSide, rightSide, bottomSide, boxContain
 		boxesAndMeasures.forEach( boxOrMeasure => { boxOrMeasure.trigger('mlayout') } )
 	}
 
+	function stopProp(e){
+		e.preventDefault()
+		e.stopPropagation()
+	}
+
 	const boxProto = {
 		init: function(col, row){
 			this.col = col
 			this.row = row
 			this.div = $('<div class="box"></div>')
+				.on('dragstart', this.dragStart.bind(this))
 				.on('dragenter', this.dragEnter.bind(this))
-				.on('dragover', e => {e.preventDefault();e.stopPropagation()})
 				.on('dragleave', this.dragLeave.bind(this))
 				.on('mlayout', this.layout.bind(this))
 				.on('drop', this.drop.bind(this))
@@ -27,30 +32,33 @@ export default function({$, topSide, leftSide, rightSide, bottomSide, boxContain
 			boxesAndMeasures.push(this.div)
 		},
 		dragEnter: function(e) {
-			e.stopPropagation()
-			e.preventDefault()
-			this.div
-				.css('box-shadow', '0 0 0 20px green')
-				.css('z-index', '1')
+			if (e.originalEvent.dataTransfer.items.length === 1) {
+				this.div
+					.css('box-shadow', '0 0 0 20px green')
+					.css('z-index', '1')
+			}
 		},
-		dragLeave: function(e) {
-			e.stopPropagation()
-			e.preventDefault()
+		dragLeave: function() {
 			this.div
 				.css('box-shadow', 'initial')
 				.css('z-index', 'initial')
 		},
+		dragStart: function(e) {
+			$('#tmpDragId').removeAttr('id')
+			this.img.attr('id', 'tmpDragId')
+			e.originalEvent.dataTransfer.setData('startX', e.originalEvent.clientX)
+			e.originalEvent.dataTransfer.setData('startY', e.originalEvent.clientY)
+		},
 		drop: function(e) {
-			e.stopPropagation()
-			e.preventDefault()
-			if (e.originalEvent.dataTransfer.files.length > 0) {
+			if (e.originalEvent.dataTransfer.files.length === 1) {
+				stopProp(e)
 				const mURL = window.URL.createObjectURL(e.originalEvent.dataTransfer.files[0])
 				blobs[[this.col, this.row]] = mURL
 				this.img
 					.attr('src', mURL)
 					.trigger('load')
+				this.div.trigger('dragleave')
 			}
-			this.div.trigger('dragleave')
 		},
 		scaleImage: function() {
 			const widthScale = this.div.width() / this.img.prop('naturalWidth')
@@ -61,16 +69,17 @@ export default function({$, topSide, leftSide, rightSide, bottomSide, boxContain
 					.width(widthScale * this.img.prop('naturalWidth'))
 					.height(widthScale * this.img.prop('naturalHeight'))
 					.css('top', -0.5 * (this.img.height() - this.div.height()))
+					.addClass('portrait')
 			} else {
 				this.img
 					.width(heightScale * this.img.prop('naturalWidth'))
 					.height(heightScale * this.img.prop('naturalHeight'))
 					.css('left', -0.5 * (this.img.width() - this.div.width()))
+					// .addClass('landscape')
 			}
 		},
 		layout: function(e){
-			e.stopPropagation()
-			e.preventDefault()
+			stopProp(e)
 			if(this.col >= g.columns() || this.row >= g.rows()){
 				this.div.remove()
 			}else{
@@ -83,6 +92,25 @@ export default function({$, topSide, leftSide, rightSide, bottomSide, boxContain
 			}
 		}
 	}
+
+	//prevent image loading if dropped anywhere
+	$(window)
+		.on('dragover', stopProp)
+		.on('drop', e => {
+			stopProp(e)
+			const img = $('#tmpDragId')
+
+			if(img.hasClass('portrait')){
+				const startY = e.originalEvent.dataTransfer.getData('startY')
+				const diffY = e.originalEvent.clientY - Number(startY)
+				img.css('top', '+=' + diffY)
+			}else{ //if(img.hasClass('landscape')){
+				const startX = e.originalEvent.dataTransfer.getData('startX')
+				const diffX = e.originalEvent.clientX - Number(startX)
+				img.css('left', '+=' + diffX)
+			}
+		})
+
 
 	const horizontalMeasureProto = {
 		configure: function({inputClass, controlledValue, getLeft, getWidth}){
@@ -128,8 +156,7 @@ export default function({$, topSide, leftSide, rightSide, bottomSide, boxContain
 			lines[2].setAttribute('y2', '100%')
 		},
 		layout: function(e){
-			e.stopPropagation()
-			e.preventDefault()
+			stopProp(e)
 			if(this.col >= g.columns()){
 				this.div.remove()
 			}else{
@@ -214,8 +241,7 @@ export default function({$, topSide, leftSide, rightSide, bottomSide, boxContain
 			lines[2].setAttribute('x2', '100%')
 		},
 		layout: function(e){
-			e.stopPropagation()
-			e.preventDefault()
+			stopProp(e)
 			if(this.row >= g.rows()){
 				this.div.remove()
 			}else{
