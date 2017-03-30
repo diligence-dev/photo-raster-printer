@@ -7,7 +7,7 @@ a free browser utility for creating image grids to print directly or save as pdf
   * no files are uploaded
   * no need to download result
 
-## detailed instructions
+## usage
 You probably don't need this - just [try it out](https://paxinice.github.io/image-grid-printer/), it's easy!
 
 Adjust the number of rows and columns by clicking the plus or minus buttons in the lower right corner.
@@ -23,9 +23,6 @@ Drag and drop image files (jpg or png) onto the orange boxes to insert them. The
 To move an image around in its box just drag and drop it.
 
 Finally use your browsers print option to save as pdf or print on paper. To save as pdf select a pdf-printer instead of an actual printer. On some operating systems (like windows 8 and older) you might need to install a pdf-printer first.
-
-## upcoming
-- menu bar
 
 ## license
 Apache 2.0

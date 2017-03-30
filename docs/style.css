@@ -96,10 +96,48 @@ body {
 		z-index: 1;
 		top: -28px;
 	}
+
+
+	header {
+		position: absolute;
+		width: 100%;
+		min-width: 1000px;
+		background-color: #222;
+	}
+	#title {
+		margin: 0;
+		padding: 21px;
+		display: block;
+		float: left;
+		background: #FF9933;
+	}
+	#menu {
+		position: relative;
+		top: 15px;
+	    list-style-type: none;
+	    margin: 0;
+		padding: 0;
+	}
+	.menuLink {
+	    float: right;
+		width: 200px;
+		background: #eee;
+		color: #222;
+		border-radius: 5px;
+		margin-right: 50px;
+	    display: block;
+	    text-align: center;
+	    padding: 15px;
+	    text-decoration: none;
+		font-size: 20px;
+	}
+	.menuLink:hover {
+	    background: #FF9933;
+	}
 }
 
 @media print {
-	.sideDiv {
+	.noPrint {
 		display: none;
 	}
 }

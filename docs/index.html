@@ -30,18 +30,26 @@
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
+		<header class="noPrint">
+			<h1 id="title">image grid creator</h1>
+			<ul id="menu">
+				<li><a class="menuLink" href="https://github.com/paxinice/image-grid-printer">source on GitHub</a></li>
+				<li><a class="menuLink" href="README.md.html">instructions</a></li>
+			</ul>
+		</header>
+
 		<div id="paper" class="screenAbsolute">
 			<div id="printArea" class="screenAbsolute"></div>
-			<div id="topSide" class="horizontal sideDiv screenAbsolute"></div>
-			<div id="rightSide" class="vertical sideDiv screenAbsolute">
+			<div id="topSide" class="horizontal noPrint screenAbsolute"></div>
+			<div id="rightSide" class="vertical noPrint screenAbsolute">
 				<img id="plusRow" src="icons/plus.png">
 				<img id="minusRow" src="icons/minus_horizontal.png">
 			</div>
-			<div id="bottomSide" class="horizontal sideDiv screenAbsolute">
+			<div id="bottomSide" class="horizontal noPrint screenAbsolute">
 				<img id="plusColumn" src="icons/plus.png">
 				<img id="minusColumn" src="icons/minus.png">
 			</div>
-			<div id="leftSide" class="vertical sideDiv screenAbsolute"></div>
+			<div id="leftSide" class="vertical noPrint screenAbsolute"></div>
 		</div>
 
 		<script src="bundle.js" charset="utf-8"></script>

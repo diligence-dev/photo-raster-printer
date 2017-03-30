@@ -2,6 +2,7 @@ import $ from 'jquery'
 import g from './mvarstore.js'
 import managerBoxesMeasures from './managerBoxesMeasures.js'
 
+const headerHeight = 80 //px
 const sideDivWidth = 80 //px
 const sideDivHeight = 50 //px
 const sideDivMargin = 10 //px
@@ -13,6 +14,8 @@ const topSide = $('#topSide')
 const leftSide = $('#leftSide')
 const rightSide = $('#rightSide')
 const bottomSide = $('#bottomSide')
+
+$('header').height(headerHeight)
 
 topSide.height(sideDivHeight).width('100%').css('top', -sideDivHeight - sideDivMargin)
 leftSide.width(sideDivWidth).height('100%').css('left', -sideDivWidth - sideDivMargin)
@@ -34,7 +37,7 @@ $(window).on('resize', function(){
 	const mleft = 0.5 * ($(window).width() - paper.width())
 	paper.css('left', Math.max(sideDivWidth + sideDivMargin, mleft))
 	const mtop = 0.5 * ($(window).height() - paper.height())
-	paper.css('top', Math.max(sideDivHeight + sideDivMargin, mtop))
+	paper.css('top', Math.max(sideDivHeight + sideDivMargin + headerHeight + 20, mtop))
 })
 
 paper.on('mlayout', function(e){
