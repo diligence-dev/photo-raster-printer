@@ -28,18 +28,47 @@
 		<meta name='theme-color' content='#ffffff'>
 
 		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="stylesheet" type="text/css" href="readme.css" media="screen">
 	</head>
 	<body>
-		<header class="noPrint">
-			<h1 id="title">image grid creator</h1>
+		<header class="noPrinta">
+			<h1 id="title">image grid printer</h1>
 			<ul id="menu">
 				<li><a class="menuLink" href="https://github.com/paxinice/image-grid-printer">source on GitHub</a></li>
-				<li><a class="menuLink" href="README.md.html">instructions</a></li>
+				<li><a class="menuLink" href="#showInstructions">instructions</a></li>
 			</ul>
 		</header>
 
-		<div class="instructions noPrint">
-			
+		<div id="showInstructions" class="noPrint">
+			<a id="modalBackground" href='#hideInstructions'></a>
+			<div id="instructionsModal" class='markdown-preview' data-use-github-style>
+				<h1 id="image-grid-printer">image-grid-printer</h1>
+		        <p>a free browser utility for creating image grids to print directly or save as pdf</p>
+		        <h2 id="how-it-works">how it works</h2>
+		        <ul>
+		            <li>no download required</li>
+		            <li>your browser does all the work (using javascript):
+		                <ul>
+		                    <li>no files are uploaded</li>
+		                    <li>no need to download result</li>
+		                </ul>
+		            </li>
+		        </ul>
+		        <h2 id="usage">usage</h2>
+		        <p>You probably don&#39;t need this - just <a href="#hideInstructions">try it out</a>, it&#39;s easy!</p>
+		        <p>Adjust the number of rows and columns by clicking the plus or minus buttons in the lower right corner.</p>
+		        <p>All measures are in millimeters (1 in = 25.4 mm).</p>
+		        <p>The page width and height should be set according to the size you want to print the result in. Initial size is A4 (210mm x 297mm). See Wikipedia for common <a href="https://en.wikipedia.org/wiki/Paper_size#Overview:_ISO_paper_sizes">international</a>        and <a href="https://en.wikipedia.org/wiki/Paper_size#Standardized_American_paper_sizes">American</a> paper sizes.</p>
+		        <p>Each printer can a only print to a specific area of a paper, leaving a margin along the edges. Setting the printer margin reduces the effective paper size, so your printer does not have to clip or scale anything. In print preview mode you can see
+		            if your browser is scaling nevertheless, in that case make sure to disable auto-scaling (set to 100%).</p>
+		        <p>Drag and drop image files (jpg or png) onto the orange boxes to insert them. The images will be scaled to fit the box. After scaling, the image will fill up the entire box and either width or height of your image will fit exactly, while the other
+		            one will be clipped.</p>
+		        <p>To move an image around in its box just drag and drop it.</p>
+		        <p>Finally use your browsers print option to save as pdf or print on paper. To save as pdf select a pdf-printer instead of an actual printer. On some operating systems (like windows 8 and older) you might need to install a pdf-printer first.</p>
+		        <h2 id="license">license</h2>
+		        <p>Apache 2.0</p>
+		        <p>Pascal Führlich 2017</p>
+		    </div>
 		</div>
 
 		<div id="paper" class="screenAbsolute">
