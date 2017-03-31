@@ -8,7 +8,7 @@ a free browser utility for creating photo rasters to print directly or save as p
   * no need to download result
 
 ## usage
-You probably don't need this - just [try it out](https://paxinice.github.io/photo-raster-printer/), it's easy!
+You probably don't need this - just [try it out](http://photoraster.org), it's easy!
 
 Drag and drop photos (jpg or png) from your file explorer onto the orange boxes to insert them. The photos will be scaled to fit the box. After scaling, the photo will fill up the entire box and either width or height of your photo will fit exactly, while the other one will be clipped.
 
