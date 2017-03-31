@@ -4,7 +4,7 @@ const pub = varstore({
 	paperWidth: 210, //mm
 	paperHeight: 297, //mm
 
-	printerMargin: 10, //mm
+	printerMargin: 20, //mm
 	imageMargin: 5, //mm
 
 	columns: 0,
