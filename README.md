@@ -1,5 +1,5 @@
-# image-grid-printer
-a free browser utility for creating image grids to print directly or save as pdf
+# photo-raster-printer
+a free browser utility for creating photo rasters to print directly or save as pdf
 
 ## how it works
 - no download required
@@ -8,7 +8,7 @@ a free browser utility for creating image grids to print directly or save as pdf
   * no need to download result
 
 ## usage
-You probably don't need this - just [try it out](https://paxinice.github.io/image-grid-printer/), it's easy!
+You probably don't need this - just [try it out](https://paxinice.github.io/photo-raster-printer/), it's easy!
 
 Adjust the number of rows and columns by clicking the plus or minus buttons in the lower right corner.
 
