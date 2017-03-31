@@ -1,0 +1,27 @@
+{
+  "name": "photo-raster-printer",
+  "version": "1.0.0",
+  "description": "a free browser utility for creating photo rasters to print directly or save as pdf",
+  "main": "js/main.js",
+  "dependencies": {
+    "jquery": "^3.2.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-env": "^1.2.2",
+    "webpack": "^2.3.2",
+    "webpack-dev-server": "^2.4.2"
+  },
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "webpack -d",
+    "prod": "webpack -p"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:paxinice/photo-raster-printer.git"
+  },
+  "author": "Pascal Führlich",
+  "license": "Apache-2.0"
+}
