@@ -69,10 +69,6 @@ managerBoxesMeasures({$, topSide, leftSide, rightSide, bottomSide, boxContainer:
 $(document).ready(function(){
 	g.rows(4)
 	g.columns(3)
-	$('.printerMarginInp').first().val(g.printerMargin()).trigger('change')
-	$('.imageMarginInp').first().val(g.imageMargin()).trigger('change')
 	g.paperWidth(g.paperWidth())
-	$('#bottomSide').find('input').val(g.paperWidth())
-	$('#rightSide').find('input').val(g.paperHeight())
 	$(window).trigger('resize')
 })
