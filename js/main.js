@@ -17,6 +17,22 @@ const bottomSide = $('#bottomSide')
 
 $('header').height(headerHeight)
 
+function setLanguage(language) {
+	if(language.startsWith('de')){
+		$('title').html('Erstelle ein Photo Raster')
+		$(':lang(de)').show()
+		$(':lang(en)').hide()
+	}else{
+		$('title').html('create a photo raster')
+		$(':lang(en)').show()
+		$(':lang(de)').hide()
+	}
+}
+setLanguage(navigator.language || navigator.userLanguage)
+
+$('#englishLanguageButton').click( () => {setLanguage('en')} )
+$('#germanLanguageButton').click( () => {setLanguage('de')} )
+
 topSide.height(sideDivHeight).width('100%').css('top', -sideDivHeight - sideDivMargin)
 leftSide.width(sideDivWidth).height('100%').css('left', -sideDivWidth - sideDivMargin)
 

@@ -101,10 +101,10 @@ body {
 	header {
 		position: absolute;
 		width: 100%;
-		min-width: 1000px;
+		min-width: 1260px;
 		background-color: #222;
 	}
-	#title {
+	#menuTitle {
 		margin: 0;
 		padding: 21px;
 		display: block;
@@ -118,20 +118,20 @@ body {
 	    margin: 0;
 		padding: 0;
 	}
-	.menuLink {
-	    float: right;
-		width: 200px;
+	.menuItem {
+		float: right;
+		height: 22px;
 		background: #eee;
 		color: #222;
 		border-radius: 5px;
 		margin-right: 50px;
 	    display: block;
 	    text-align: center;
-	    padding: 15px;
+	    padding: 15px 25px 15px 25px;
 	    text-decoration: none;
 		font-size: 20px;
 	}
-	.menuLink:hover {
+	.menuItem:hover {
 	    background: #FF9933;
 	}
 }
