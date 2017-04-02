@@ -21,7 +21,7 @@
 }
 
 #modalBackground {
-	z-index: 2;
+	z-index: 3;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -33,7 +33,7 @@
 
 
 #instructionsModal {
-	z-index: 2;
+	z-index: 3;
 	width: 80%;
 	max-width: 800px;
 	position: absolute;

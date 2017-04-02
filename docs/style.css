@@ -2,11 +2,11 @@ body {
 	margin: 0;
 	padding: 0;
 }
+
 .box {
 	position: absolute;
 	overflow: hidden;
 }
-
 .box img {
 	position: absolute;
 }
@@ -73,30 +73,39 @@ body {
 		width: 50px;
 		transform: scaleY(-1);
 	}
-	#plusRow {
+
+	#bottomSide img, #rightSide img {
+		z-index: 2;
+		background: #eee;
+		padding: 10px;
+		border: 3px solid #000;
+		border-radius: 15px;
 		position: absolute;
+	}
+	#bottomSide img:hover, #rightSide img:hover {
+		background: #bbb;
+	}
+
+	#rightSide img {
+		right: 30px;
+	}
+	#plusRow {
 		bottom: 0;
-		z-index: 1;
 		transform: rotateZ(90deg);
 	}
 	#minusRow {
-		position: absolute;
-		bottom: 70px;
-		z-index: 1;
-	}
-	#plusColumn {
-		position: absolute;
-		right: 0;
-		top: -28px;
-		z-index: 1;
-	}
-	#minusColumn {
-		position: absolute;
-		right: 70px;
-		z-index: 1;
-		top: -28px;
+		bottom: 130px;
 	}
 
+	#bottomSide img {
+		bottom: 30px;
+	}
+	#plusColumn {
+		right: 0;
+	}
+	#minusColumn {
+		right: 130px;
+	}
 
 	header {
 		position: absolute;
