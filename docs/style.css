@@ -74,39 +74,6 @@ body {
 		transform: scaleY(-1);
 	}
 
-	#bottomSide img, #rightSide img {
-		z-index: 2;
-		background: #eee;
-		padding: 10px;
-		border: 3px solid #000;
-		border-radius: 15px;
-		position: absolute;
-	}
-	#bottomSide img:hover, #rightSide img:hover {
-		background: #bbb;
-	}
-
-	#rightSide img {
-		right: 30px;
-	}
-	#plusRow {
-		bottom: 0;
-		transform: rotateZ(90deg);
-	}
-	#minusRow {
-		bottom: 130px;
-	}
-
-	#bottomSide img {
-		bottom: 30px;
-	}
-	#plusColumn {
-		right: 0;
-	}
-	#minusColumn {
-		right: 130px;
-	}
-
 	header {
 		position: absolute;
 		width: 100%;
@@ -139,9 +106,83 @@ body {
 	    padding: 15px 25px 15px 25px;
 	    text-decoration: none;
 		font-size: 20px;
+		cursor: pointer;
 	}
 	.menuItem:hover {
 	    background: #FF9933;
+	}
+	/*tooltip*/
+	.boxButton {
+		z-index: 2;
+		background: #eee;
+		padding: 10px;
+		border: 3px solid #000;
+		border-radius: 15px;
+		position: absolute;
+		cursor: pointer;
+	}
+	.boxButton:hover {
+		background: #bbb;
+	}
+
+	#rightSide .boxButton {
+		right: 30px;
+		transform: scaleX(-1);
+	}
+	#plusRow {
+		bottom: 0;
+	}
+	#plusRow img {
+		transform: rotateZ(90deg);
+	}
+	#minusRow {
+		bottom: 130px;
+	}
+
+	#bottomSide .boxButton {
+		bottom: 30px;
+		transform: scaleY(-1);
+	}
+	#plusColumn {
+		right: 0;
+	}
+	#minusColumn {
+		right: 130px;
+	}
+	[data-tooltip]::before {
+		content: attr(data-tooltip);
+		display: none;
+		position: absolute;
+		height: 20px;
+		width: 150px;
+		text-align: center;
+		background: black;
+		color: white;
+		padding: 10px;
+		border-radius: 10px;
+	}
+	#rightSide [data-tooltip]::before {
+		right: 100%;
+		top: 50%;
+		transform: translateY(-50%);
+		margin-right: 10px;
+	}
+	#bottomSide [data-tooltip]::before {
+		bottom: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		margin-bottom: 10px;
+	}
+	[data-tooltip]:hover::before {
+		display: inline;
+	}
+	.boxButton > div {
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		z-index: 3;
 	}
 }
 

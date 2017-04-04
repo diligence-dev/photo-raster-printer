@@ -6,6 +6,9 @@ module.exports =  {
 		path: path.join(__dirname, 'docs'),
 		filename: 'bundle.js'
 	},
+	watchOptions: {
+		ignored: /node_modules/,
+	},
 	module: {
 		rules: [
 			{
@@ -19,9 +22,5 @@ module.exports =  {
 				}
 			}
 		]
-	},
-	devServer: {
-		contentBase: 'docs',
-		stats: 'errors-only',
 	}
 }

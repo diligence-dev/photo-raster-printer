@@ -10,13 +10,12 @@
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.1",
     "babel-preset-env": "^1.2.2",
+    "live-server": "^1.2.0",
     "svgo": "^0.7.2",
-    "webpack": "^2.3.2",
-    "webpack-dev-server": "^2.4.2"
+    "webpack": "^2.3.2"
   },
   "scripts": {
-    "start": "webpack-dev-server",
-    "build": "webpack -d",
+    "start": "live-server docs/",
     "prod": "webpack -p"
   },
   "repository": {
